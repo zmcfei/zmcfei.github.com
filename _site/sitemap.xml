@@ -29,9 +29,18 @@
   </url>
   
   <url>
-    <loc>/2013/01/tmp/</loc>
+    <loc>/2012/04/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%BC%80%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/</loc>
     
-    <lastmod>2013-01-01T00:00:00+08:00</lastmod>
+    <lastmod>2012-04-23T00:00:00+08:00</lastmod>
+    
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <url>
+    <loc>/2011/05/RPC%E9%80%9A%E4%BF%A1%E6%9C%BA%E5%88%B6/</loc>
+    
+    <lastmod>2011-05-10T00:00:00+08:00</lastmod>
     
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
