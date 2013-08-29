@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: github | xiaolai]]></title>
+  <link href="http://xiaolai.github.com/blog/categories/github/atom.xml" rel="self"/>
+  <link href="http://xiaolai.github.com/"/>
+  <updated>2012-12-23T14:17:26+08:00</updated>
+  <id>http://xiaolai.github.com/</id>
+  <author>
+    <name><![CDATA[xiaolai]]></name>
+    <email><![CDATA[lixiaolai@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[把博客搬到github上的好处]]></title>
+    <link href="http://xiaolai.github.com/blog/2012/09/25/ba-bo-ke-ban-dao-githubshang-de-hao-chu/"/>
+    <updated>2012-09-25T15:44:00+08:00</updated>
+    <id>http://xiaolai.github.com/blog/2012/09/25/ba-bo-ke-ban-dao-githubshang-de-hao-chu</id>
+    <content type="html"><![CDATA[<p>Git这个工具实际上并不仅仅是给程序员用的。版本控制谁都需要，对码字的人尤为如此。使用Git工具相当于在自己的硬盘上创建了一个备份，而后又在“云端”（github.com）上创建了一个备份，更重要的是，随时可以回滚（rollback）到过往的某个状态……</p>
+
+<p>对我来说还有另外一个好处，就是再也不用关心服务器压力了。过去一段时间里，天天收到Linode的邮件……现在终于可以忽略这些邮件了。哼哼。</p>
+
+<p>最后一个好处是“装蛋”。这样写博客更像码农。哈。而老博客的内容，挪到<a href="http://wordpress.lixiaolai.com">http://wordpress.lixiaolai.com</a>上了，文件都在，链接尽量都改过。现在已经能够正常访问。</p>
+]]></content>
+  </entry>
+  
+</feed>
