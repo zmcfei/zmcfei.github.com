@@ -11,9 +11,90 @@
   </url>
   
   <url>
-    <loc>/2012/10/gitosis/</loc>
+    <loc>/2013/06/git-fork-workflow/</loc>
     
-    <lastmod>2012-10-09T00:00:00+08:00</lastmod>
+    <lastmod>2013-06-23T00:00:00+08:00</lastmod>
+    
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <url>
+    <loc>/2013/06/cocoapods-101/</loc>
+    
+    <lastmod>2013-06-23T00:00:00+08:00</lastmod>
+    
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <url>
+    <loc>/2013/05/discourse-install-guide/</loc>
+    
+    <lastmod>2013-05-25T00:00:00+08:00</lastmod>
+    
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <url>
+    <loc>/2013/05/git-revisions/</loc>
+    
+    <lastmod>2013-05-09T00:00:00+08:00</lastmod>
+    
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <url>
+    <loc>/2013/04/git-reflog/</loc>
+    
+    <lastmod>2013-04-26T00:00:00+08:00</lastmod>
+    
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <url>
+    <loc>/2013/04/git-keynote/</loc>
+    
+    <lastmod>2013-04-19T00:00:00+08:00</lastmod>
+    
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <url>
+    <loc>/2013/04/ios-cookie/</loc>
+    
+    <lastmod>2013-04-02T00:00:00+08:00</lastmod>
+    
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <url>
+    <loc>/2013/03/web/</loc>
+    
+    <lastmod>2013-03-25T00:00:00+08:00</lastmod>
+    
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <url>
+    <loc>/2013/03/seek-differences/</loc>
+    
+    <lastmod>2013-03-20T00:00:00+08:00</lastmod>
+    
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <url>
+    <loc>/2013/03/core-text/</loc>
+    
+    <lastmod>2013-03-11T00:00:00+08:00</lastmod>
     
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>

@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="author" content="海涛" />
-    <title>阿里巴巴搜索技术总结 | 海涛</title>
+    <title>iOS Cookie使用 | 海涛</title>
     <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAD/APr59wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIiIiIiAAAiIiIiIiIAACIiIiIiIgERERERERIiAREREREREiIBERERERESIgERIiIiERIiAREiIiIREiIBESIhERESIgERIiERERIiAREiIiIiIiIBESIiIiIiIgERIiIiIiIiAREREREREAABEREREREQAAERERERERAADgAQAA4AEAAOABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAA8AAAAPAAAADwAA" rel="icon" type="image/x-icon" />
     <link href="/feed/" rel="alternate" title="海涛" type="application/atom+xml" />
     
@@ -26,34 +26,36 @@
           <a href="/about" class="ss-icon" title="About" >user</a>
           <a href="/feed" class="ss-icon" title="Subscribe by RSS" >rss</a>
         </div>
-        <h1>阿里巴巴搜索技术总结</h1>
+        <h1>iOS Cookie使用</h1>
         </header>
         <hr>
         <article class="content">
         <section class="post">
-<hr />
+<p>关于Cookie的标准和原理这里就不细说了，这里只说说在iOS平台下如何进行Cookie相关的编程。  <br/>
+和Mac上不同，在iOS平台上各个App都有自己的Cookie，App之间不共享Cookie。  <br/>
+一个Cookie对应一个NSHTTPCookie实体，并通过NSHTTPCookieStorage进行管理。  <br/>
+那些需要持久化的Cookie是存放在 <code>~/Library/Cookies/Cookies.binarycookies</code> 文件中的，二进制格式。</p>
 
-<h1>阿里巴巴搜索引擎技术大讲堂</h1>
+<p>Cookie生成的有两个途径，一个是访问一个网页，这个网页返回的HTTP Header中有Set-Cookie指令进行Cookie的设置，这里Cookie的本地处理其实是由WebKit进行的；还有一种途径就是客户端通过代码手动设置Cookie。</p>
 
-<p> 今天结束了阿里巴巴<strong>搜索引擎</strong>的课程学习，通过两天的课程我可以说收获很多。 这也是我第一次用md语言来写博客。有点小兴奋哦，记录下时间，现在时刻是2013-08-28：23：26。呵呵</p>
-
-<hr />
-
-<h2>正文</h2>
-
-<p> <strong>1，了解了阿里巴巴的搜索技术框架和各个细节。<br/>
-2，了解了一个武侠公司的文化。<br/>
-   3，对自己的兴趣爱好又有了更深入的了解，如：我知道了自己很喜欢架构这个东西。</strong></p>
-
-<p><strong>代码实例</strong></p>
-
-<p>c++:</p>
-
-<pre><code>public class Blog
-{
-    int hai;
-};
+<pre><code>NSMutableDictionary *cookieProperties = [NSMutableDictionary dictionary];
+[cookieProperties setObject:@"name" forKey:NSHTTPCookieName];
+[cookieProperties setObject:@"value" forKey:NSHTTPCookieValue];
+[cookieProperties setObject:@"www.taobao.com" forKey:NSHTTPCookieDomain];
+[cookieProperties setObject:@"/" forKey:NSHTTPCookiePath];
+[cookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+[cookieProperties setObject:@"30000" forKey:NSHTTPCookieMaximumAge];
+NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties:cookieProperties];
+[[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
+//删除cookie的方法为deleteCookie:
 </code></pre>
+
+<p>在通过<code>setCookie:</code>进行设置cookie的时候，会覆盖name,domain,path都相同的cookie的。  <br/>
+至于cookie会不会持久化到cookie文件中主要看这个cookie的生命周期，和Max-Age或者Expires有关。</p>
+
+<p><br>
+不过NSHTTPCookieStorage存在一个问题，setCookie或者deleteCookie后并不会立即进行持久化，而是有几秒的延迟。如果在持久化之前App接收到SIGKILL信号，App退出，那么会导致cookie相关操作的丢失。在模拟器调试的过程中，XCode重启App的时发给App的就是SIGKILL，不过真正的生产环境中很少有这种情况。 <br/>
+但是有时候为了可靠性，我们还是会将cookie信息保存一份到User Defaults，需要用的时候load进来。关于cookie操作丢失的详情可以查看这里<a href="http://openradar.appspot.com/radar?id=2776403">NSHTTPCookieStorage looses cookies on SIGKILL</a></p>
 
 </section>
 <section class="meta">
@@ -62,7 +64,7 @@
 </span>
 <span class="time">
   /
-  <time datetime="2013-08-28">2013-08-28</time>
+  <time datetime="2013-04-02">2013-04-02</time>
 </span>
 <br />
 <span class="license">
@@ -72,7 +74,7 @@
 <span class="categories">
   in categories
   
-  <a href="/categories/#programming review" title="programming review">programming review</a>&nbsp;
+  <a href="/categories/#programming" title="programming">programming</a>&nbsp;
   
 </span>
 
@@ -80,7 +82,13 @@
 <span class="tags">
   tagged with 
   
-  <a href="/tags/#搜索引擎" title="搜索引擎">搜索引擎</a>&nbsp;
+  <a href="/tags/#Objc" title="Objc">Objc</a>&nbsp;
+  
+  <a href="/tags/#Cocoa" title="Cocoa">Cocoa</a>&nbsp;
+  
+  <a href="/tags/#iOS" title="iOS">iOS</a>&nbsp;
+  
+  <a href="/tags/#Mac" title="Mac">Mac</a>&nbsp;
   
 </span>
 
@@ -90,7 +98,7 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
     var disqus_shortname = 'geeklu'; // required: replace example with your forum shortname
-    var disqus_url = '/2013/08/%E9%98%BF%E9%87%8C%E5%B7%B4%E5%B7%B4%E6%90%9C%E7%B4%A2%E6%8A%80%E6%9C%AF%E6%80%BB%E7%BB%93/';
+    var disqus_url = '/2013/04/ios-cookie/';
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -108,11 +116,13 @@ $(function(){
     var url = false;
         if (e.which == 37 || e.which == 74) {  // Left arrow and J
             
-        url = '/2013/06/git-fork-workflow/';
+        url = '/2013/03/web/';
         
         }
         else if (e.which == 39 || e.which == 75) {  // Right arrow and K
             
+        url = '/2013/04/git-keynote/';
+        
         }
         if (url) {
             window.location = url;
