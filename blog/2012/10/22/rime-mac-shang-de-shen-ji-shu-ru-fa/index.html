@@ -1,0 +1,397 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Rime: 被称为‘神一样的输入法’ —— Squirrel (OS X) - xiaolai</title>
+  <meta name="author" content="xiaolai">
+
+  
+  <meta name="description" content="早就有人向我推荐鼠须管输入法，可惜我愚笨，试了一下没学会，就放下了。昨天因为不想在新机器上安装百度、QQ、搜狗之类的输入法，就想起重新试试鼠须管。幸好Gtalk上能联络到作者佛振，在他的帮忙下终于搞定。 这款输入法的名字是Rime，Linux版叫“中州韵”(ibus-rime)，Windows版叫 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaolai.github.com/blog/2012/10/22/rime-mac-shang-de-shen-ji-shu-ru-fa/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/custom.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="xiaolai" type="application/atom+xml">
+  <link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<script src="/javascripts/jquery-1.7.1.min.js" type="text/javascript"></script>
+<script src="/javascripts/jquery.tableofcontents.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+  // Revert jQuery's '$' alias, to avoid clashes with ender.js. NOTE: Use
+  // jQuery(...), instead of $(...) from here on.
+  jQuery.noConflict();
+</script>
+<script src="/javascripts/generate-toc.js" type="text/javascript"></script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-1452494-20']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <div id="logo">
+  	<div id="logoLeft">{</div>
+  	<div id="logoText">am</div>
+  	<div id="logoRight">}</div>
+  	<div class="clear"></div>
+  </div>
+  <h1><a href="/">xiaolai</a></h1>
+  
+    <h2>寓学于教: 教是最好的学习方法……</h2>
+  
+  <div class="clear"></div>
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:xiaolai.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+	<li><a href="/">博客</a></li>
+  <li><a href="/blog/archives">归档</a></li>
+	<li><a href="/alpha">阿尔法</a></li>
+	<li><a href="http://wordpress.lixiaolai.com">老站存档</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      
+        <h1 class="entry-title">Rime: 被称为‘神一样的输入法’ —— Squirrel (OS X)</h1>
+      
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-22T23:36:00+08:00" pubdate data-updated="true">Oct 22<span>nd</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>早就有人向我推荐鼠须管输入法，可惜我愚笨，试了一下没学会，就放下了。昨天因为不想在新机器上安装百度、QQ、搜狗之类的输入法，就想起重新试试鼠须管。幸好Gtalk上能联络到作者佛振，在他的帮忙下终于搞定。</p>
+
+<p>这款输入法的名字是<a href="http://code.google.com/p/rimeime/wiki/Downloads">Rime</a>，Linux版叫“中州韵”(ibus-rime)，Windows版叫“小狼毫”(Weasel)，Mac OS版叫“鼠须管”(Squirrel)。</p>
+
+<p>下载安装很容易，配置，由于没有图形化界面(GUI)，所以稍微麻烦一点点。(事实上，只是因为我的需求稍微特殊一点，如果过去一直是使用全拼、简拼的话，其实完全没必要进行什么设置，下载安装之后就可以直接用了……另，如果你用全拼，但需要打开模糊音设置，那就创建<a href="https://gist.github.com/2320943">这个文件</a>；如果你需要其它输入方案，那就创建<a href="https://gist.github.com/2309739">这个文件</a>)</p>
+
+<p>我的需求如下：</p>
+
+<ul>
+  <li>微软双拼方案（当年选择微软拼音的时候，还是所谓“万码奔腾”的时代，那时候它还真是当时最好的中文输入法。）</li>
+  <li>模糊音设置（只需区分 z/zh、c/ch、s/sh —— 这是十多年前为了提高输入速度而养成的习惯，还真的很难改回来……）</li>
+</ul>
+
+<blockquote>
+  <p>话说当年选个输入法真的不容易，因为没有一个方案是完善的——其实到今天也一样，只不过，算法及计算能力的改善使得键位方案没那么重要了……</p>
+
+  <p>微软拼音（其实是哈尔滨工业大学开发，后来被微软购买的）在当年算是最好的方案了。当年花了一下午时间适应了双拼之后，觉得输入速度大幅度提高（毕竟两键一字啊！）后来，发现还有一个提高速度的方法，就是打开模糊音，不区分z/zh、c/ch、s/sh。这样的话，可以调整左右手搭配。比如，输入“是啊”这两个字的时候，如果不打开模糊音，那么就是<code>u</code> <code>i</code> <code>o</code> <code>a</code>，连续三个右手动作，而后一个左手动作；可如果打开模糊音了的话，就可以输入 <code>s</code> <code>i</code> <code>o</code> <code>a</code>，这样就是左右手交替，左右左右，明显更容易有节奏。(记得当年选择微软拼音输入方案的另外一个原因是，它的选字方法有个很智能的地方，就是方向键移动光标到右侧尽头之后，光标会循环显示至最左侧——这个小功能无比体贴；还有，它的整句输入在当时是革命性的……)</p>
+
+  <p>这一用，就用了十多年，到了Mac上才意识到苹果是不可能提供微软拼音方案的……这一年多以来，各种输入法之间徘徊，每一个都是凑合着用……直到现在，有了鼠须管……</p>
+</blockquote>
+
+<h1 id="section">启用微软双拼方案</h1>
+
+<p>在<code>~/Library/Rime</code>目录下创建<code>default.custom.yaml</code>文件，添加如下内容：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>default.custom.yaml </span><a href="https://github.com/xiaolai/rime-settings/blob/master/default.custom.yaml">code </a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">patch</span><span class="p">:</span>
+</span><span class="line">  <span class="s">&quot;menu/page_size&quot;</span><span class="p">:</span> <span class="mi">5</span>
+</span><span class="line">  <span class="n">schema_list</span><span class="p">:</span>
+</span><span class="line">    <span class="o">-</span> <span class="n">schema</span><span class="p">:</span> <span class="n">double_pinyin_mspy</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>而后，deploy（点击系统菜单栏上的输入法图标，之后选择“deploy”）…… <code>~/Library/Rime</code>目录下会生成几个新的文件，其中包括<code>double_pinyin_mspy.schema.yaml</code>…… 下一步启用模糊音设置，就是要修改这个文件。</p>
+
+<h1 id="section-1">设置模糊音</h1>
+
+<p>(我尝试创建一个<code>double_pinyin_mspy.custom.yaml</code>文件，而后进行设置，并未成功。佛振先生说，因为目前还不能给list文件打patch……似懂非懂，不明觉厉)</p>
+
+<p>打开<code>double_pinyin_mspy.schema.yaml</code>，在第52行之后，输入（注意缩进对齐——这是python语言，缩进很重要）：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>double_pinyin_mspy.schema.yaml </span><a href="https://github.com/xiaolai/rime-settings/blob/master/double_pinyin_mspy.schema.yaml">code </a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line">  <span class="o">-</span> <span class="n">derive</span><span class="o">/^</span><span class="p">([</span><span class="n">zcs</span><span class="p">])</span><span class="n">h</span><span class="o">/</span><span class="err">$</span><span class="mi">1</span><span class="o">/</span>             <span class="c"># zh, ch, sh =&gt; z, c, s</span>
+</span><span class="line">  <span class="o">-</span> <span class="n">derive</span><span class="o">/^</span><span class="p">([</span><span class="n">zcs</span><span class="p">])([</span><span class="o">^</span><span class="n">h</span><span class="p">])</span><span class="o">/</span><span class="err">$</span><span class="mi">1</span><span class="n">h</span><span class="err">$</span><span class="mi">2</span><span class="o">/</span>     <span class="c"># z, c, s =&gt; zh, ch, sh</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h1 id="section-2">在特定程序中起始状态为非中文</h1>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>squirrel.custom.yaml </span><a href="https://github.com/xiaolai/rime-settings/blob/master/squirrel.custom.yaml">code </a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">patch</span><span class="p">:</span>
+</span><span class="line">  <span class="n">app_options</span><span class="o">/</span><span class="n">com</span><span class="o">.</span><span class="n">apple</span><span class="o">.</span><span class="n">Terminal</span><span class="p">:</span>
+</span><span class="line">    <span class="n">ascii_mode</span><span class="p">:</span> <span class="n">true</span>
+</span><span class="line">  <span class="n">app_options</span><span class="o">/</span><span class="n">com</span><span class="o">.</span><span class="n">apple</span><span class="o">.</span><span class="n">Safari</span><span class="p">:</span>
+</span><span class="line">    <span class="n">ascii_mode</span><span class="p">:</span> <span class="n">true</span>
+</span><span class="line">  <span class="n">app_options</span><span class="o">/</span><span class="n">com</span><span class="o">.</span><span class="n">macromates</span><span class="o">.</span><span class="n">TextMate</span><span class="o">.</span><span class="n">preview</span><span class="p">:</span>
+</span><span class="line">    <span class="n">ascii_mode</span><span class="p">:</span> <span class="n">true</span>
+</span><span class="line">  <span class="n">app_options</span><span class="o">/</span><span class="n">com</span><span class="o">.</span><span class="n">sublimetext</span><span class="o">.</span><span class="mi">2</span><span class="p">:</span>
+</span><span class="line">    <span class="n">ascii_mode</span><span class="p">:</span> <span class="n">true</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h1 id="section-3">更换图标</h1>
+
+<p>鼠须管的图标比较难看，我随便在网上找了一个适合放在菜单条上的黑白图标：<a href="https://github.com/xiaolai/rime-settings/raw/master/rime.icns">https://github.com/xiaolai/rime-settings/raw/master/rime.icns</a>，用来替换<code>/Library/Input\ Methods/Squirrel.app/Contents/Resources/rime.icns</code>.</p>
+
+<h1 id="section-4">导入各种词库</h1>
+
+<p>我自己没空折腾这个，基本上自带的词库对我来说已经够用了。不过，这里有一篇很详细的文章，应该够用了：<a href="http://www.ukuang.com/2012/10/13/鼠须管输入法导入搜狗细胞词库/">鼠须管输入法导入搜狗细胞词库</a>.</p>
+
+<h1 id="section-5">补充</h1>
+
+<p>用了几天之后才发现鼠须管居然带着一个国际音标输入方案，这对我来说实在太有用了！打开之前用过的default.custom.yaml文件，添加这个方案：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>default.custom.yaml </span><a href="https://github.com/xiaolai/rime-settings/blob/master/default.custom.yaml">code </a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">patch</span><span class="p">:</span>
+</span><span class="line">  <span class="s">&quot;menu/page_size&quot;</span><span class="p">:</span> <span class="mi">5</span>
+</span><span class="line">  <span class="n">schema_list</span><span class="p">:</span>
+</span><span class="line">    <span class="o">-</span> <span class="n">schema</span><span class="p">:</span> <span class="n">double_pinyin_mspy</span>
+</span><span class="line">    <span class="o">-</span> <span class="n">schema</span><span class="p">:</span> <span class="n">ipa_xsampa</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>而后deploy（部署），control + ` 再选就可以更换到这个输入方案。</p>
+
+<p>另外，我自己前几天写了个TextMate Bundle，用来输入国际音标的HTML Entities，托管在github: <a href="https://github.com/xiaolai/ipa-html-entities-tmbundle">ipa-html-entities-tmbundle</a>，也许对一些人有用。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">xiaolai</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-22T23:36:00+08:00" pubdate data-updated="true">Oct 22<span>nd</span>, 2012</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://xiaolai.github.com/blog/2012/10/22/rime-mac-shang-de-shen-ji-shu-ru-fa/" data-via="xiaolai" data-counturl="http://xiaolai.github.com/blog/2012/10/22/rime-mac-shang-de-shen-ji-shu-ru-fa/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left articlenav" href="/blog/2012/10/20/Rewrite-Everyone-Can-Use-English/" title="Previous Post: 重写《人人都能用英语》">&laquo; 重写《人人都能用英语》</a>
+      
+      
+        <a class="basic-alignment right articlenav" href="/blog/2012/10/28/english-phonetics-keyboard-layout-for-mac-os-x/" title="Next Post: English Phonetics Keyboard Layout for Mac OS X">English Phonetics Keyboard Layout for Mac OS X &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+	<h1>About Me</h1>
+	just another life-long learner ...
+</section>
+
+<section>
+  <h1>On Delicious</h1>
+  <div id="delicious"></div>
+  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/xiaolai?count=3&amp;sort=date&amp;callback=renderDeliciousLinks"></script>
+  <p><a href="http://delicious.com/xiaolai">My Delicious Bookmarks &raquo;</a></p>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/12/23/on-training-of-teaching-sat-toefl/">关于TOEFL/SAT教师培训（2013）</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/06/ang-lee-told-a-disgusting-version-of-a-story/">李安讲了一个下流的故事</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/01/yong-shen-cha-zhi-du-wei-ji-de-li-yi-zhe-bian-hu-shi-bu-hou-dao-de/">用审查制度为既得利益者辩护是不厚道的</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/08/sharing-location-on-ios/">使用iPhone共享当前位置</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/02/on-plagiarism/">关于剽窃</a>
+      </li>
+    
+  </ul>
+</section>
+
+	
+		<a href="http://twitter.com/xiaolai" class="twitter-follow-button" data-show-count="true">Follow @xiaolai</a>
+	
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - xiaolai -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'xiaolaigithub';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://xiaolai.github.com/blog/2012/10/22/rime-mac-shang-de-shen-ji-shu-ru-fa/';
+        var disqus_url = 'http://xiaolai.github.com/blog/2012/10/22/rime-mac-shang-de-shen-ji-shu-ru-fa/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>
