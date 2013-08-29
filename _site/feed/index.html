@@ -1,0 +1,970 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <rss version="2.0"
+        xmlns:content="http://purl.org/rss/1.0/modules/content/"
+        xmlns:atom="http://www.w3.org/2005/Atom"
+  >
+  <channel>
+    <title>海涛</title>
+    <link href="/feed/" rel="self" />
+    <link href="http://geeklu.com" />
+    <lastBuildDate>2013-08-29T17:23:28+08:00</lastBuildDate>
+    <webMaster>kejinlu@gmail.com</webMaster>
+    
+    <item>
+      <title>阿里巴巴搜索技术总结</title>
+      <link href="/2013/08/%E9%98%BF%E9%87%8C%E5%B7%B4%E5%B7%B4%E6%90%9C%E7%B4%A2%E6%8A%80%E6%9C%AF%E6%80%BB%E7%BB%93/"/>
+      <pubDate>2013-08-28T00:00:00+08:00</pubDate>
+      <author>海涛</author>
+      <guid>/2013/08/阿里巴巴搜索技术总结</guid>
+      <content:encoded><![CDATA[<hr />
+
+<h1>阿里巴巴搜索引擎技术大讲堂</h1>
+
+<p> 今天结束了阿里巴巴<strong>搜索引擎</strong>的课程学习，通过两天的课程我可以说收获很多。 这也是我第一次用md语言来写博客。有点小兴奋哦，记录下时间，现在时刻是2013-08-28：23：26。呵呵</p>
+
+<hr />
+
+<h2>正文</h2>
+
+<p> <strong>1，了解了阿里巴巴的搜索技术框架和各个细节。<br/>
+2，了解了一个武侠公司的文化。<br/>
+   3，对自己的兴趣爱好又有了更深入的了解，如：我知道了自己很喜欢架构这个东西。</strong></p>
+
+<p><strong>代码实例</strong></p>
+
+<p>c++:</p>
+
+<pre><code>public class Blog
+{
+    int hai;
+};
+</code></pre>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>浅谈Gitosis实现原理</title>
+      <link href="/2012/10/gitosis/"/>
+      <pubDate>2012-10-09T00:00:00+08:00</pubDate>
+      <author>海涛</author>
+      <guid>/2012/10/gitosis</guid>
+      <content:encoded><![CDATA[<p>git作为一个分布式的版本控制系统,其实client端和server的差别并不是很大，只是server端往往没有工作拷贝的需求，所以往往是一个裸库（bare repository），往往文件夹的名称为xxxx.git ，裸库的内容其实就相当于客户端某个工程下的.git目录了.     <br/>
+<br>
+<img src="http://i.imgur.com/8JWC0HV.png" alt="" />
+<br>
+使用git的时候，一般和服务器通讯使用的是ssh协议，用ssh的主要优点是速度快（传输前数据会先压缩，比HTTP快），安全，方便读写。
+客户端通过ssh访问服务器端的验证方式一般有两种，一种是用户名密码的方式，一种是使用公私钥认证的方式.
+使用公私钥的方式比较方便，无需每次登录输入密码。
+某个受信任的客户端的公钥会被设置在服务器端的 ~/.ssh/authorized_keys文件中，有关此文件的格式可以参见 sshd的用户手册  <code>man sshd</code> . authorized_keys有个比较厉害的功能是 支持 command参数，使得每次用户使用此公钥进行验证的时候执行此后面的命令.这样就可以做一些逻辑处理了.   <br/>
+<br>
+一般git库的管理需要权限控制，如何方便简单的进行库的权限管理呢？ authorized_keys是一个思路，指定特定command参数，每次验证好用户后首先执行相关逻辑，检测当前用户是否具有某个权限。
+所以便有了gitosis，与其说gitosis是一个git权限管理系统，还不如说它是一个authorized_keys文件管理器.   <br/>
+gitosis的设计思路很巧妙，开天辟地之初，需要一个gitosis的管理员，所以你就在你的客户端机器上生成一对公私钥，将公钥拷贝到git服务器端的/tmp/下，然后通过gitosis在git用户home目录下运行如下初始化命令，后面的公钥便是gitosis首个管理员的公钥</p>
+
+<div class="highlight"><pre><code class="bash">sudo -H -u git gitosis-init &lt; /tmp/id_rsa.pub
+</code></pre></div>
+
+
+<p>执行之后，home目录下出现一个repositories的目录，目录下存在一个gitosis-admin.git的git库. 其实gitosis就是通过这个git库来管理所有git库的访问权限的。  <br/>
+在刚才你的客户端机器上clone出这个库，因为你刚刚用你的公钥初始化了gitosis，所以你有权限访问服务器端的库（其实你可以在服务器端看看authorized_keys文件便知道原因了）。
+这个gitosis-admin的库中存在一个gitosis.conf和一个keydir的目录，gitosis.conf文件就是权限配置的地方，keydir目录下存放的是所有客户端的公钥，公钥名字必须和配置文件中的member名字对应.至于gitosis.conf的语法及用法可以去查看帮助。 <br/>
+当修改完配置和添加好需要添加的公钥之后，提交并push到git服务器，这个库的存在hook，当提交后，会根据新的配置和公钥去更新服务器端git用户的authorized_keys，以便加入新用户的公钥，用于权限控制命令，以及在裸库的目录下提取出新的gitosis.conf文件。<br/>
+<br>
+所以 gitosis的核心在于authorized_keys的command参数和git的hook功能.</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>谈谈iOS Animation</title>
+      <link href="/2012/09/animation-in-ios/"/>
+      <pubDate>2012-09-26T00:00:00+08:00</pubDate>
+      <author>海涛</author>
+      <guid>/2012/09/animation-in-ios</guid>
+      <content:encoded><![CDATA[<h3>零.前言</h3>
+
+<p> 这里没有太多的代码细节,只是探索iOS动画的基本概念,以及其抽象模型,数学基础等.我们学习一个知识的时候一般有两个部分,抽象部分和形象部分,抽象好比语言的语法,是规则,形象好比具体的句子,可以用来和别人交流的.抽象比形象难于理解,但比形象通用.其实数学中经常碰到抽象和形象的概念,比如有一系列离散的点,这是形象;通过这些点我们拟合出一条曲线,得到其函数,函数是抽象的;然后通过这个函数我们可以得到更多的点,这又回到了形象上.所以学习任何知识不能仅仅停留在会用了,而要上升一个层次,去学习研究其抽象层次上的知识,抽象层度越高,则越通用.</p>
+
+<h3>一.基本概念</h3>
+
+<p>什么是Animation(动画),简单点说就是在一段时间内,显示的内容发生了变化.对CALayer来说就是在一段时间内,其Animatable Property发生了变化.从CALayer(CA = Core Animation)类名来看就可以看出iOS的Layer就是为动画而生的,便于实现良好的交互体验.
+这里涉及到两个东西: 一是Layer(基类CALayer),一是Animation(基于CAAnimation). Animation作用于Layer.CALayer提供了接口用于给自己添加Animation.
+用于显示的Layer本质上讲是一个Model,包含了Layer的各种属性值.
+Animation则包含了动画的时间,变化,以及变化的速度.下面分别详细讲解Layer和Animation相关知识.</p>
+
+<h3>二.CALayer及时间模型</h3>
+
+<p>我们都知道UIView是MVC中的View.UIView的职责在于界面的显示和界面事件的处理.每一个View的背后都有一个layer(可以通过view.layer进行访问),layer是用于界面显示的.CALayer属于QuartzCore框架,非常重要,但并没有想象中的那么好理解.我们通常操作的用于显示的Layer在Core Animation这层的概念中其实担当的是数据模型Model的角色,它并不直接做渲染的工作.关于Layer,之前从座标系的角度分析过,这次则侧重于它的时间系统.</p>
+
+<h4>1.Layer的渲染架构</h4>
+
+<p>Layer也和View一样存在着一个层级树状结构,称之为图层树(Layer Tree),直接创建的或者通过UIView获得的(view.layer)用于显示的图层树,称之为模型树(Model Tree),模型树的背后还存在两份图层树的拷贝,一个是呈现树(Presentation Tree),一个是渲染树(Render Tree).
+呈现树可以通过普通layer(其实就是模型树)的layer.presentationLayer获得,而模型树则可以通过modelLayer属性获得(详情文档).模型树的属性在其被修改的时候就变成了新的值,这个是可以用代码直接操控的部分;呈现树的属性值和动画运行过程中界面上看到的是一致的.而渲染树是私有的,你无法访问到,渲染树是对呈现树的数据进行渲染,为了不阻塞主线程,渲染的过程是在单独的进程或线程中进行的,所以你会发现Animation的动画并不会阻塞主线程.</p>
+
+<h4>2.事务管理</h4>
+
+<p>CALayer的那些可用于动画的(Animatable)属性,称之为Animatable Properties,这里有一份详情的列表,罗列了所有的 <a href="http://developer.apple.com/library/ios/#documentation/Cocoa/Conceptual/CoreAnimation_guide/Articles/AnimProps.html">CALayer Animatable Properties</a>.
+如果一个Layer对象存在对应着的View,则称这个Layer是一个Root Layer,非Root Layer一般都是通过CALayer或其子类直接创建的.下面的subLayer就是一个典型的非Root Layer,它没有对应的View对象关联着.</p>
+
+<div class="highlight"><pre><code class="objc">    <span class="n">subLayer</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CALayer</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+    <span class="n">subLayer</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">);</span>
+    <span class="n">subLayer</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIColor</span> <span class="n">redColor</span><span class="p">]</span> <span class="n">CGColor</span><span class="p">];</span>
+    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">layer</span> <span class="n">addSublayer</span><span class="o">:</span><span class="n">subLayer</span><span class="p">];</span>
+</code></pre></div>
+
+
+<p>所有的非Root Layer在设置Animatable Properties的时候都存在着隐式动画,默认的duration是0.25秒.</p>
+
+<div class="highlight"><pre><code class="objc">    <span class="n">subLayer</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span><span class="mi">400</span><span class="p">);</span>
+</code></pre></div>
+
+
+<p>像上面这段代码当下一个RunLoop开始的时候并不是直接将subLayer的position变成(300,400)的,而是有个移动的动画进行过渡完成的.</p>
+
+<p>任何Layer的animatable属性的设置都应该属于某个CA事务(CATransaction),事务的作用是为了保证多个animatable属性的变化同时进行,不管是同一个layer还是不同的layer之间的.CATransaction也分两类,显式的和隐式的,当在某次RunLoop中设置一个animatable属性的时候,如果发现当前没有事务,则会自动创建一个CA事务,在线程的下个RunLoop开始时自动commit这个事务,如果在没有RunLoop的地方设置layer的animatable属性,则必须使用显式的事务.</p>
+
+<p>显式事务的使用如下：</p>
+
+<div class="highlight"><pre><code class="objc"><span class="p">[</span><span class="n">CATransaction</span> <span class="n">begin</span><span class="p">];</span>
+<span class="p">...</span>  
+<span class="p">[</span><span class="n">CATransaction</span> <span class="n">commit</span><span class="p">];</span>
+</code></pre></div>
+
+
+<p>事务可以嵌套.当事务嵌套时候,只有当最外层的事务commit了之后,整个动画才开始.</p>
+
+<p>可以通过CATransaction来设置一个事务级别的动画属性,覆盖隐式动画的相关属性,比如覆盖隐式动画的duration,timingFunction.如果是显式动画没有设置duration或者timingFunction,那么CA事务设置的这些参数也会对这个显式动画起作用.</p>
+
+<p>还可以设置completionBlock,当当前CATransaction的所有动画执行结束后, completionBlock会被调用.</p>
+
+<h4>3.时间系统</h4>
+
+<p>CALayer实现了CAMediaTiming协议.
+CALayer通过CAMediaTiming协议实现了一个有层级关系的时间系统.除了CALayer,CAAnimation也采纳了此协议,用来实现动画的时间系统.  <br/>
+在CA中,有一个Absolute Time(绝对时间)的概念,可以通过CACurrentMediaTime()获得,其实这个绝对时间就是将mach_absolute_time()转换成秒后的值.这个时间和系统的uptime有关,系统重启后CACurrentMediaTime()会被重置. <br/>
+就和座标存在相对座标一样,不同的实现了CAMediaTiming协议的存在层级关系的对象也存在相对时间,经常需要进行时间的转换,CALayer提供了两个时间转换的方法:</p>
+
+<div class="highlight"><pre><code class="objc"><span class="k">-</span> <span class="p">(</span><span class="n">CFTimeInterval</span><span class="p">)</span><span class="nf">convertTime:</span><span class="p">(</span><span class="n">CFTimeInterval</span><span class="p">)</span><span class="nv">t</span> <span class="nf">fromLayer:</span><span class="p">(</span><span class="n">CALayer</span> <span class="o">*</span><span class="p">)</span><span class="nv">l</span><span class="p">;</span>
+<span class="k">-</span> <span class="p">(</span><span class="n">CFTimeInterval</span><span class="p">)</span><span class="nf">convertTime:</span><span class="p">(</span><span class="n">CFTimeInterval</span><span class="p">)</span><span class="nv">t</span> <span class="nf">toLayer:</span><span class="p">(</span><span class="n">CALayer</span> <span class="o">*</span><span class="p">)</span><span class="nv">l</span><span class="p">;</span>
+</code></pre></div>
+
+
+<p>现在来重点研究CAMediaTiming协议中几个重要的属性.</p>
+
+<h4>beginTime</h4>
+
+<p>无论是图层还是动画,都有一个时间线Timeline的概念,他们的beginTime是相对于父级对象的开始时间.
+虽然苹果的文档中没有指明,但是通过代码测试可以发现,默认情况下所有的CALayer图层的时间线都是一致的,他们的beginTime都是0,绝对时间转换到当前Layer中的时间大小就是绝对时间的大小.所以对于图层而言,虽然创建有先后,但是他们的时间线都是一致的(只要不主动去修改某个图层的beginTime),所以我们可以想象成所有的图层默认都是从系统重启后开始了他们的时间线的计时.</p>
+
+<p>但是动画的时间线的情况就不同了,当一个动画创建好,被加入到某个Layer的时候,会先被拷贝一份出来用于加入当前的图层,在CA事务被提交的时候,如果图层中的动画的beginTime为0,则beginTime会被设定为当前图层的当前时间,使得动画立即开始.如果你想某个直接加入图层的动画稍后执行,可以通过手动设置这个动画的beginTime,但需要注意的是这个beginTime需要为 CACurrentMediaTime()+延迟的秒数,因为beginTime是指其父级对象的时间线上的某个时间,这个时候动画的父级对象为加入的这个图层,图层当前的时间其实为[layer convertTime:CACurrentMediaTime() fromLayer:nil],其实就等于CACurrentMediaTime(),那么再在这个layer的时间线上往后延迟一定的秒数便得到上面的那个结果.</p>
+
+<h4>timeOffset</h4>
+
+<p>这个timeOffset可能是这几个属性中比较难理解的一个,官方的文档也没有讲的很清楚.
+local time也分成两种一种是active local time 一种是basic local time.<br/>
+timeOffset则是active local time的偏移量. <br/>
+你将一个动画看作一个环,timeOffset改变的其实是动画在环内的起点,比如一个duration为5秒的动画,将timeOffset设置为2(或者7,模5为2),那么动画的运行则是从原来的2秒开始到5秒,接着再0秒到2秒,完成一次动画.</p>
+
+<h4>speed</h4>
+
+<p>speed属性用于设置当前对象的时间流相对于父级对象时间流的流逝速度,比如一个动画beginTime是0,但是speed是2,那么这个动画的1秒处相当于父级对象时间流中的2秒处.
+speed越大则说明时间流逝速度越快,那动画也就越快.比如一个speed为2的layer其所有的父辈的speed都是1,它有一个subLayer,speed也为2,那么一个8秒的动画在这个运行于这个subLayer只需2秒(8 / (2 * 2)).所以speed有叠加的效果.</p>
+
+<h4>fillMode</h4>
+
+<p>fillMode的作用就是决定当前对象过了非active时间段的行为.
+比如动画开始之前,动画结束之后。如果是一个动画CAAnimation,则需要将其removedOnCompletion设置为NO,要不然fillMode不起作用.
+下面来讲各个fillMode的意义 <br/>
+<strong>kCAFillModeRemoved</strong>  这个是默认值,也就是说当动画开始前和动画结束后,动画对layer都没有影响,动画结束后,layer会恢复到之前的状态 <br/>
+<strong>kCAFillModeForwards</strong> 当动画结束后,layer会一直保持着动画最后的状态   <br/>
+<strong>kCAFillModeBackwards</strong>  这个和kCAFillModeForwards是相对的,就是在动画开始前,你只要将动画加入了一个layer,layer便立即进入动画的初始状态并等待动画开始.你可以这样设定测试代码,将一个动画加入一个layer的时候延迟5秒执行.然后就会发现在动画没有开始的时候,只要动画被加入了layer,layer便处于动画初始状态  <br/>
+<strong>kCAFillModeBoth</strong> 理解了上面两个,这个就很好理解了,这个其实就是上面两个的合成.动画加入后开始之前,layer便处于动画初始状态,动画结束后layer保持动画最后的状态.</p>
+
+<p>其他的一些参数都是比较容易理解的.</p>
+
+<h4>实际应用</h4>
+
+<p>参见苹果官方 QA1673 <a href="https://developer.apple.com/library/ios/#qa/qa2009/qa1673.html">How to pause the animation of a layer tree</a></p>
+
+<div class="highlight"><pre><code class="objc"><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">pauseLayer:</span><span class="p">(</span><span class="n">CALayer</span><span class="o">*</span><span class="p">)</span><span class="nv">layer</span>
+<span class="p">{</span>
+    <span class="n">CFTimeInterval</span> <span class="n">pausedTime</span> <span class="o">=</span> <span class="p">[</span><span class="n">layer</span> <span class="n">convertTime</span><span class="o">:</span><span class="n">CACurrentMediaTime</span><span class="p">()</span> <span class="n">fromLayer</span><span class="o">:</span><span class="nb">nil</span><span class="p">];</span>
+    <span class="n">layer</span><span class="p">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+    <span class="n">layer</span><span class="p">.</span><span class="n">timeOffset</span> <span class="o">=</span> <span class="n">pausedTime</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">resumeLayer:</span><span class="p">(</span><span class="n">CALayer</span><span class="o">*</span><span class="p">)</span><span class="nv">layer</span>
+<span class="p">{</span>
+    <span class="n">CFTimeInterval</span> <span class="n">pausedTime</span> <span class="o">=</span> <span class="p">[</span><span class="n">layer</span> <span class="n">timeOffset</span><span class="p">];</span>
+    <span class="n">layer</span><span class="p">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
+    <span class="n">layer</span><span class="p">.</span><span class="n">timeOffset</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+    <span class="n">layer</span><span class="p">.</span><span class="n">beginTime</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+    <span class="n">CFTimeInterval</span> <span class="n">timeSincePause</span> <span class="o">=</span> <span class="p">[</span><span class="n">layer</span> <span class="n">convertTime</span><span class="o">:</span><span class="n">CACurrentMediaTime</span><span class="p">()</span> <span class="n">fromLayer</span><span class="o">:</span><span class="nb">nil</span><span class="p">]</span> <span class="o">-</span> <span class="n">pausedTime</span><span class="p">;</span>
+    <span class="n">layer</span><span class="p">.</span><span class="n">beginTime</span> <span class="o">=</span> <span class="n">timeSincePause</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+<h3>三.显式动画Animation</h3>
+
+<p>当需要对非Root Layer进行动画或者需要对动画做更多自定义的行为的时候,就必须使用到显式动画了,显式动画的基类为CAAnimation,常用的是CABasicAnimation,CAKeyframeAnimation有时候还会使用到CAAnimationGroup,CATransition(注意不是CATransaction,Transition是过渡的意思). <br/>
+<img src="http://ww1.sinaimg.cn/large/65cc0af7gw1dxlusbklpmj.jpg" alt="" /></p>
+
+<p>这里再强调关于动画的两个重要的点:一是中间状态的插值计算(Interpolation),二是动画节奏控制(Timing); 有时候插值计算也和Timing有一定关系.
+如果状态是一维空间的值(比如透明度),那么插值计算的结果必然再起点值和终点值之间,如果状态是二维空间的值(比如position),那么一般情况下插值得到的点会落在起点和终点之间的线段上（当然也有可能连线是圆滑曲线）.</p>
+
+<h4>1.CABasicAnimation</h4>
+
+<p>不管是CABasicAnimation还是CAKeyframeAnimation都是继承于CAPropertyAnimation.
+<img src="http://ww4.sinaimg.cn/large/65cc0af7gw1dxlum1261zj.jpg" alt="" />
+CABasicAnimation有三个比较重要的属性,fromValue,toValue,byValue,这三个属性都是可选的,但不能同时多于两个为非空.最终都是为了确定animation变化的起点和终点.<a href="http://developer.apple.com/library/ios/#documentation/GraphicsImaging/Reference/CABasicAnimation_class/Introduction/Introduction.html#//apple_ref/doc/uid/TP40004496-CH1-SW4">Setting Interpolation Values</a>详细介绍了这个三个值的各种情况以及用途.
+设置了动画的起点和终点之后,中间的值都是通过插值方式计算出来的.插值计算的结果由timingFunction指定,默认timingFunction为nil,会使用liner的,也就是变化是均匀的.</p>
+
+<h4>2.Timing Function的作用</h4>
+
+<p>Timing Function的会被用于变化起点和终点之间的插值计算.形象点说是Timing Function决定了动画运行的节奏(Pacing),比如是均匀变化(相同时间变化量相同),先快后慢,先慢后快还是先慢再快再慢.</p>
+
+<p>时间函数是使用的一段函数来描述的,横座标是时间t取值范围是0.0-1.0,纵座标是变化量x(t)也是取值范围也是0.0-1.0
+假设有一个动画,duration是8秒,变化值的起点是a终点是b(假设是透明度),那么在4秒处的值是多少呢？
+可以通过计算为 a + x(4/8) * (b-a), 为什么这么计算呢？讲实现的时间映射到单位值的时候4秒相对于总时间8秒就是0.5然后可以得到0.5的时候单位变化量是 x(0.5), x(0.5)/1 = 实际变化量/(b-a), 其中b-a为总变化量,所以实际变化量就是x(0.5) * (b-a) ,最后4秒时的值就是 a + x(0.5) * (b-a),所以计算的本质是映射.</p>
+
+<p>Timing Function对应的类是CAMediaTimingFunction,它提供了两种获得时间函数的方式,一种是使用预定义的五种时间函数,一种是通过给点两个控制点得到一个时间函数.
+相关的方法为</p>
+
+<div class="highlight"><pre><code class="objc"><span class="k">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">functionWithName:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">name</span><span class="p">;</span>
+
+<span class="k">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">functionWithControlPoints:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">c1x</span> <span class="o">:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">c1y</span> <span class="o">:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">c2x</span> <span class="o">:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">c2y</span><span class="p">;</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithControlPoints:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">c1x</span> <span class="o">:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">c1y</span> <span class="o">:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">c2x</span> <span class="o">:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">c2y</span><span class="p">;</span>
+</code></pre></div>
+
+
+<p>五种预定义的时间函数名字的常量变量分别为  <br/>
+kCAMediaTimingFunctionLinear,  <br/>
+kCAMediaTimingFunctionEaseIn, <br/>
+kCAMediaTimingFunctionEaseOut,  <br/>
+kCAMediaTimingFunctionEaseInEaseOut,  <br/>
+kCAMediaTimingFunctionDefault. <br/>
+下图展示了前面四种Timing Function的曲线图,横座标表示时间,纵座标表示变化量,这点需要搞清楚(并不是平面座标系中xy).
+<img src="http://ww1.sinaimg.cn/large/65cc0af7gw1dxlv7mhtj3j.jpg" alt="" /><br/>
+自定义的Timing Function的函数图像就是一条三次贝塞尔曲线<a href="http://zh.wikipedia.org/zh-cn/%E8%B4%9D%E5%A1%9E%E5%B0%94%E6%9B%B2%E7%BA%BF">Cubic Bezier Curve</a>,贝塞尔曲线的优点就是光滑,用在这里就使得变化显得光滑.一条三次贝塞尔曲线可以由起点终点以及两个控制点决定.   <br/>
+上面的kCAMediaTimingFunctionDefault对应的函数曲线其实就是通过[(0.0,0.0), (0.25,0.1), (0.25,0.1), (1.0,1.0)]这四个点决定的三次贝塞尔曲线,头尾为起点和终点,中间的两个点是控制点. <br/>
+<img src="http://ww2.sinaimg.cn/large/65cc0af7gw1dxm21gxjr0j.jpg" alt="" />  <br/>
+上图中P0是起点,P3是终点,P1和P2是两个控制点</p>
+
+<p>如果时间变化曲线既不是直线也不是贝塞尔曲线,而是自定义的,又或者某个图层运动的轨迹不是直线而是一个曲线,这些是基本动画无法做到的,所以引入下面的内容,CAKeyframeAnimation,也即所谓的关键帧动画.</p>
+
+<h4>3.CAKeyframeAnimation</h4>
+
+<p>任何动画要表现出运动或者变化,至少需要两个不同的关键状态,而中间的状态的变化可以通过插值计算完成,从而形成补间动画,表示关键状态的帧叫做关键帧.
+<img src="http://ww3.sinaimg.cn/large/65cc0af7gw1dxlv01a1jmj.jpg" alt="" />
+CABasicAnimation其实可以看作一种特殊的关键帧动画,只有头尾两个关键帧.CAKeyframeAnimation则可以支持任意多个关键帧,关键帧有两种方式来指定,使用path或者使用values,path是一个CGPathRef的值,且path只能对CALayer的 anchorPoint 和 position 属性起作用,且设置了path之后values就不再起效了.而values则更加灵活.
+keyTimes这个可选参数可以为对应的关键帧指定对应的时间点,其取值范围为0到1.0,keyTimes中的每一个时间值都对应values中的每一帧.当keyTimes没有设置的时候,各个关键帧的时间是平分的. <br/>
+还可以通过设置可选参数timingFunctions(CAKeyframeAnimation中timingFunction是无效的)为关键帧之间的过渡设置timingFunction,如果values有n个元素,那么timingFunctions则应该有n-1个.但很多时候并不需要timingFunctions,因为已经设置了够多的关键帧了,比如没1/60秒就设置了一个关键帧,那么帧率将达到60FPS,完全不需要相邻两帧的过渡效果（当然也有可能某两帧 值相距较大,可以使用均匀变化或者增加帧率,比如每0.01秒设置一个关键帧）.</p>
+
+<p>在关键帧动画中还有一个非常重要的参数,那便是calculationMode,计算模式.其主要针对的是每一帧的内容为一个座标点的情况,也就是对anchorPoint 和 position 进行的动画.当在平面座标系中有多个离散的点的时候,可以是离散的,也可以直线相连后进行插值计算,也可以使用圆滑的曲线将他们相连后进行插值计算.
+calculationMode目前提供如下几种模式
+kCAAnimationLinear <br/>
+kCAAnimationDiscrete <br/>
+kCAAnimationPaced <br/>
+kCAAnimationCubic <br/>
+kCAAnimationCubicPaced</p>
+
+<p><strong>kCAAnimationLinear</strong> calculationMode的默认值,表示当关键帧为座标点的时候,关键帧之间直接直线相连进行插值计算;  <br/>
+<strong>kCAAnimationDiscrete</strong> 离散的,就是不进行插值计算,所有关键帧直接逐个进行显示; <br/>
+<strong>kCAAnimationPaced</strong> 使得动画均匀进行,而不是按keyTimes设置的或者按关键帧平分时间,此时keyTimes和timingFunctions无效;    <br/>
+<strong>kCAAnimationCubic</strong> 对关键帧为座标点的关键帧进行圆滑曲线相连后插值计算,对于曲线的形状还可以通过tensionValues,continuityValues,biasValues来进行调整自定义,这里的数学原理是<a href="http://en.wikipedia.org/wiki/Kochanek-Bartels_spline">Kochanek–Bartels spline</a>,这里的主要目的是使得运行的轨迹变得圆滑;    <br/>
+<strong>kCAAnimationCubicPaced</strong> 看这个名字就知道和kCAAnimationCubic有一定联系,其实就是在kCAAnimationCubic的基础上使得动画运行变得均匀,就是系统时间内运动的距离相同,此时keyTimes以及timingFunctions也是无效的.</p>
+
+<p><br>
+最后推荐下WWDC 2010和2011上的关于Animation相关的Session,大家可以找找来看.2010的有说到Core Graphic相关内容.以及他们都从性能方面对CA做了些诠释.</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>SKU选择控件的实现</title>
+      <link href="/2012/09/sku/"/>
+      <pubDate>2012-09-21T00:00:00+08:00</pubDate>
+      <author>海涛</author>
+      <guid>/2012/09/sku</guid>
+      <content:encoded><![CDATA[<h3>一.知识准备</h3>
+
+<p>在淘宝网，产品指的是标准化产品,由(类目,关键属性)决定，如一个手机产品由 (手机类目,(品牌,型号))决定。
+SPU，Standard Product Unit(标准化产品单元)，一般是由(关键属性:属性值)这样的键值对组成的。
+SKU，Stock Keeping Uint(库存量单位)，由(销售属性:属性值)的键值对，它直接影响买家的购买和卖家的库存管理，如 某个服装的 (颜色:黑色,尺码:XXL)。 <br/>
+总结一下就是SPU是标准化产品单元，区分品种；SKU是库存量单位，区分单品；商品特指与商家有关的商品，可对应多个SKU。我们通常所说的"宝贝"其实指的是商品。当在购买存在多个SKU的宝贝的时候，我们第一步需要做的就是选择一个SKU,然后才能进行购买加入购物车等操作。</p>
+
+<h3>二.接口数据和算法分析</h3>
+
+<p>为了便于计算机实现，产品的关键属性以及销售属性以及他们的属性值在计算机系统都会进行编码，使用数字来表示，方便计算机进行计算。如果想详细了解淘宝某个类目下的某类产品的各种属性可以通过属性工具进行查看:
+<a href="http://open.taobao.com/api_tool/props/">属性工具</a>  。<br/>
+这里以淘宝开放平台的SKU结构为例子讲解<a href="http://api.taobao.com/apidoc/dataStruct.htm?path=cid:4-dataStructId:17-apiId:20">SKU对象</a>    <br/>
+一个SKU结构 一般包含:</p>
+
+<ul>
+<li>skuId</li>
+<li>SKU的组成(p1:v1;p2:v2;p3:v3...)，用来表示当前SKU由哪些销售属性组成以及对应的属性值是什么</li>
+<li>还有当前SKU键值对对应的中文名字符串(因为上面的组成都是编号)</li>
+<li>当前SKU的库存</li>
+<li>当前SKU的价格</li>
+</ul>
+
+
+<p>当然不同的接口返回的SKU的数据结构会不太相同，但是包含的信息量是一致的。</p>
+
+<p>以下是网页中商品(宝贝的数字id为13890058021)的SKU选择控件的显示，从中可以看出一些东西
+<img src="http://ww2.sinaimg.cn/large/65cc0af7gw1dx5mlv0vznj.jpg" alt="" /></p>
+
+<ul>
+<li>一个属性 一般对应多个属性值，用户需要对属性值进行选择</li>
+<li>当有多个属性存在时，用户需要进行多维度的选择，最终的SKU是各种销售属性键值对组合而成</li>
+<li>当一个属性的属性值被选择之后可能会对其他的属性的属性值的可选性产生影响，因为某些SKU可能没有库存了。这样一个SKU属性值选择了之后，别的属性的属性值选择按钮就会被disabled了.</li>
+</ul>
+
+
+<p>以上例子的数据TOP接口的数据返回为:</p>
+
+<div class="highlight"><pre><code class="js"><span class="p">{</span>
+  <span class="s2">&quot;item_get_response&quot;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s2">&quot;item&quot;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="p">...</span>
+      <span class="s2">&quot;property_alias&quot;</span><span class="o">:</span> <span class="s2">&quot;1627207:3232483:格子裙(七分袖，模特版);1627207:3232484:格子裙(九分袖，袖口无分叉)&quot;</span><span class="p">,</span>
+      <span class="p">...</span>
+      <span class="s2">&quot;skus&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;sku&quot;</span><span class="o">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="s2">&quot;created&quot;</span><span class="o">:</span> <span class="s2">&quot;2012-08-31 19:18:51&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;modified&quot;</span><span class="o">:</span> <span class="s2">&quot;2012-09-20 10:46:41&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;price&quot;</span><span class="o">:</span> <span class="s2">&quot;140.00&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="o">:</span> <span class="s2">&quot;1627207:3232484;20509:28314&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties_name&quot;</span><span class="o">:</span> <span class="s2">&quot;1627207:3232484:颜色分类:天蓝色;20509:28314:尺码:S&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;quantity&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;sku_id&quot;</span><span class="o">:</span> <span class="mi">24659375069</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="s2">&quot;created&quot;</span><span class="o">:</span> <span class="s2">&quot;2012-08-31 19:18:51&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;modified&quot;</span><span class="o">:</span> <span class="s2">&quot;2012-09-08 21:49:39&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;price&quot;</span><span class="o">:</span> <span class="s2">&quot;140.00&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="o">:</span> <span class="s2">&quot;1627207:3232484;20509:28315&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties_name&quot;</span><span class="o">:</span> <span class="s2">&quot;1627207:3232484:颜色分类:天蓝色;20509:28315:尺码:M&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;quantity&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;sku_id&quot;</span><span class="o">:</span> <span class="mi">24659375070</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="s2">&quot;created&quot;</span><span class="o">:</span> <span class="s2">&quot;2012-08-31 19:18:51&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;modified&quot;</span><span class="o">:</span> <span class="s2">&quot;2012-09-21 10:40:03&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;price&quot;</span><span class="o">:</span> <span class="s2">&quot;140.00&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="o">:</span> <span class="s2">&quot;1627207:3232484;20509:28316&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties_name&quot;</span><span class="o">:</span> <span class="s2">&quot;1627207:3232484:颜色分类:天蓝色;20509:28316:尺码:L&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;quantity&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;sku_id&quot;</span><span class="o">:</span> <span class="mi">24659375071</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="s2">&quot;created&quot;</span><span class="o">:</span> <span class="s2">&quot;2012-08-31 19:18:51&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;modified&quot;</span><span class="o">:</span> <span class="s2">&quot;2012-09-22 20:40:48&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;price&quot;</span><span class="o">:</span> <span class="s2">&quot;140.00&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="o">:</span> <span class="s2">&quot;1627207:3232484;20509:28317&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties_name&quot;</span><span class="o">:</span> <span class="s2">&quot;1627207:3232484:颜色分类:天蓝色;20509:28317:尺码:XL&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;quantity&quot;</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
+            <span class="s2">&quot;sku_id&quot;</span><span class="o">:</span> <span class="mi">24659375072</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="s2">&quot;created&quot;</span><span class="o">:</span> <span class="s2">&quot;2012-09-08 21:49:39&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;modified&quot;</span><span class="o">:</span> <span class="s2">&quot;2012-09-21 18:54:08&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;price&quot;</span><span class="o">:</span> <span class="s2">&quot;140.00&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="o">:</span> <span class="s2">&quot;1627207:3232483;20509:28314&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties_name&quot;</span><span class="o">:</span> <span class="s2">&quot;1627207:3232483:颜色分类:军绿色;20509:28314:尺码:S&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;quantity&quot;</span><span class="o">:</span> <span class="mi">44</span><span class="p">,</span>
+            <span class="s2">&quot;sku_id&quot;</span><span class="o">:</span> <span class="mi">24901123154</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="s2">&quot;created&quot;</span><span class="o">:</span> <span class="s2">&quot;2012-09-08 21:49:39&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;modified&quot;</span><span class="o">:</span> <span class="s2">&quot;2012-09-22 21:11:18&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;price&quot;</span><span class="o">:</span> <span class="s2">&quot;140.00&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="o">:</span> <span class="s2">&quot;1627207:3232483;20509:28315&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties_name&quot;</span><span class="o">:</span> <span class="s2">&quot;1627207:3232483:颜色分类:军绿色;20509:28315:尺码:M&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;quantity&quot;</span><span class="o">:</span> <span class="mi">45</span><span class="p">,</span>
+            <span class="s2">&quot;sku_id&quot;</span><span class="o">:</span> <span class="mi">24901123155</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="s2">&quot;created&quot;</span><span class="o">:</span> <span class="s2">&quot;2012-09-08 21:49:39&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;modified&quot;</span><span class="o">:</span> <span class="s2">&quot;2012-09-22 15:52:56&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;price&quot;</span><span class="o">:</span> <span class="s2">&quot;140.00&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="o">:</span> <span class="s2">&quot;1627207:3232483;20509:28316&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties_name&quot;</span><span class="o">:</span> <span class="s2">&quot;1627207:3232483:颜色分类:军绿色;20509:28316:尺码:L&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;quantity&quot;</span><span class="o">:</span> <span class="mi">39</span><span class="p">,</span>
+            <span class="s2">&quot;sku_id&quot;</span><span class="o">:</span> <span class="mi">24901123156</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="s2">&quot;created&quot;</span><span class="o">:</span> <span class="s2">&quot;2012-09-08 21:49:39&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;modified&quot;</span><span class="o">:</span> <span class="s2">&quot;2012-09-16 12:03:18&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;price&quot;</span><span class="o">:</span> <span class="s2">&quot;140.00&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="o">:</span> <span class="s2">&quot;1627207:3232483;20509:28317&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;properties_name&quot;</span><span class="o">:</span> <span class="s2">&quot;1627207:3232483:颜色分类:军绿色;20509:28317:尺码:XL&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;quantity&quot;</span><span class="o">:</span> <span class="mi">50</span><span class="p">,</span>
+            <span class="s2">&quot;sku_id&quot;</span><span class="o">:</span> <span class="mi">24901123157</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="p">...</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+<p>上面销售属性有两个:
+颜色分类(编号1627207)的属性值有两种 军绿色(别名 格子裙(七分袖，模特版) 编号3232483) 天蓝色(别名 格子裙(九分袖，袖口无分叉) 编号3232484)   <br/>
+尺码(编号20509)的属性值有四种 S(编号28314) M(编号28315) L(编号28316) XL(编号28317)</p>
+
+<p>返回的所有的sku中只有那些库存量大于0的sku才是有效sku,一般情况sku属性个数不会超过3个。</p>
+
+<p>初始状态是所有的属性值都处于非选中状态，如果此时你选择尺码S，那么程序需要对还没有选择的属性的属性值进行检测，也就是对颜色分类的每一个属性值进行检测，以判断在此情况下其是否可以被选择，如果不能被选择，则需要被设置为禁用状态，首先对 格子裙(七分袖，模特版) 编号3232483进行检验 查看 1627207:3232483;20509:28314(sku中各个属性的先后次序是一定的)是否能够存在,到所有的sku中查看发现此组合是可以存在的且为一个完整的sku. 接着来检查 格子裙(九分袖，袖口无分叉)编号3232484 ， 也就是检查1627207:3232484;20509:28314组合是否能够存在 发现其匹配的sku库存为0，则需要将其设置为不可选,所以便有了上图的情形。</p>
+
+<p>上面的分析毕竟为人类大脑思考的模式，当需要用计算机来实现的时候，需要进行再抽象，找出算法。
+如果某个属性值被选中了，可以看作某个属性键值对被选中了。假设某个宝贝的一个存货大于0的sku为 abc (其中a,b,c都是键值对,将其看作一个集合集合中有三个元素a,b,c)，那么通过这个sku可以知道sku属性的可选组合包括 a,ab,ac,b,bc,c,abc，所以本质是求此sku的非空子集。如果存在多个库存大于0的sku，则需要分别求其非空子集,最后得到的所有的集合(有些集合可能重复了需要剔除)就是所有sku属性可选组合了，可以用来检验属性值的可选性.</p>
+
+<p>计算组合的非空子集的算法可以使用二进制位的方式进行计算。
+对构成一个SKU的属性键值对的组合而言，在其某一个子集中，每一个属性键值对的状态无非有两个，不存在和存在，我们分别用0和1表示，那么有n个键值对的SKU所有的子集个数为2<sup>n</sup> 去除一个空集后为2<sup>n</sup> - 1.</p>
+
+<div class="highlight"><pre><code class="js"><span class="nx">c</span>   <span class="nx">b</span>   <span class="nx">a</span>   
+<span class="mi">0</span>   <span class="mi">0</span>   <span class="mi">1</span>      <span class="nx">a</span> 
+<span class="mi">0</span>   <span class="mi">1</span>   <span class="mi">0</span>      <span class="nx">b</span>
+<span class="mi">0</span>   <span class="mi">1</span>   <span class="mi">1</span>      <span class="nx">ab</span>
+<span class="mi">1</span>   <span class="mi">0</span>   <span class="mi">0</span>      <span class="nx">c</span>
+<span class="mi">1</span>   <span class="mi">0</span>   <span class="mi">1</span>      <span class="nx">ac</span>
+<span class="mi">1</span>   <span class="mi">1</span>   <span class="mi">0</span>      <span class="nx">bc</span>
+<span class="mi">1</span>   <span class="mi">1</span>   <span class="mi">1</span>      <span class="nx">abc</span>
+</code></pre></div>
+
+
+<p>从上面的枚举可以看到，算abc的非空子集只需index 从1到2<sup>n</sup> - 1 进行遍历,每次将index的二进制位中为1的对应位置的字母选中组成一个集合.最后得到所有可能存在的属性键值对组合的集合。
+检测的方法就是对非选中属性的每一个属性值进行检测，将其键值对和已经选择了的键值对组成一个集合然后判断这个集合是不是存在于上面算出的所有的集合中，如果存在则说明可选，否则不可选。</p>
+
+<h3>三.功能实现</h3>
+
+<p>控件实现的重点就是，某个属性值按钮选择后其他属性的属性值按钮的可选择性状态的更新，以及选择了一个属性值之后，需要检查当前已经选择的"属性属性值对"组合 能否构成一个完整的SKU，如果能则将控件的selectedSku设置为指定的SKU对象以及更新显示的库存和价格，否则当前SKU设置为nil.</p>
+
+<h4>数据准备</h4>
+
+<p>在数据准备阶段，</p>
+
+<ol>
+<li>需要建立一个SKU的Map，key为SKU的属性键值对组合 ，value为SKU对象</li>
+<li>需要一个SKU的键值对可能存在的组合的一个Map，主要是为了检测一个属性值按钮选择之后对其他属性的属性值可选性的影响，key为键值对组合，value就为1,没有实际意义</li>
+<li>如果在所有有存货的SKU中都没有某个属性值出现，那么需要将其剔除，要不然那个属性值按钮一直处于disabled状态</li>
+</ol>
+
+
+<h4>创建和状态更新</h4>
+
+<p>当数据都准备好了，就开始针对每一个属性创建出其所有的属性值的按钮控件，按钮显示的属性值对应的中文。
+所有的属性值按钮都创建OK了之后，当我们点击某个属性值按钮之后，需要根据之前创建的"SKU的键值对可能存在的组合子集"对所有的还没有选择的属性的属性值的可选性进行更新。</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>UIWebView内部解析</title>
+      <link href="/2012/09/uiwebview-subviews/"/>
+      <pubDate>2012-09-20T00:00:00+08:00</pubDate>
+      <author>海涛</author>
+      <guid>/2012/09/uiwebview-subviews</guid>
+      <content:encoded><![CDATA[<p>UIWebView在使用的时候可以上下左右滑动，其内部肯定存在个UIScrollView.
+从接口声明看 UIWebView继承于UIView不过实现了UIScrollViewDelegate,说明其内部确认存在一个UIScrollView且其为这个ScrollView的delegate.</p>
+
+<p>通过代码测试发现,UIWebView存在一个subview其类型为<em>UIWebViewScrollView(5.0之前是一个UIScrollView),</em>UIWebViewScrollView继承于UIScrollView，实现了一些自己的东西。
+这个时候再来看看这个ScrollView的subviews有什么，
+其subviews首先存在10个UIImageView的对象，主要用于实现上下的边界后面的阴影效果，如果你想把这些阴影效果去掉，可以使这些UIImageView的对象设置为hidden隐藏掉，还有一个重要的subview便是UIWebBrowserView,这里便是渲染网页内容的地方了。</p>
+
+<p>当网页在加载的过程中，UIWebBrowserView会动态的根据网页内容的高度去调整ScrollView的ContentSize。</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Interface Orientations</title>
+      <link href="/2012/08/interface-orientations/"/>
+      <pubDate>2012-08-19T00:00:00+08:00</pubDate>
+      <author>海涛</author>
+      <guid>/2012/08/interface-orientations</guid>
+      <content:encoded><![CDATA[<h3>一.UISupportedInterfaceOrientations</h3>
+
+<p>这个UIKit的设定可以通过XCode工具来设定.
+<br>   <br/>
+<img src="http://farm9.staticflickr.com/8432/7813371994_00279e8940.jpg" alt="" />
+<br></p>
+
+<p>或者直接编辑info plist    <br/>
+<br>
+<img src="http://farm9.staticflickr.com/8307/7813372098_aca4f81c62_z.jpg" alt="" />
+ <br></p>
+
+<p>对应的是一个数组,可以有以下几种类型
+UIInterfaceOrientationPortrait   <br/>
+UIInterfaceOrientationPortraitUpsideDown   <br/>
+UIInterfaceOrientationLandscapeLeft   <br/>
+UIInterfaceOrientationLandscapeRight  <br/>
+那UISupportedInterfaceOrientations的作用是什么呢？   <br/>
+系统会根据UISupportedInterfaceOrientations支持的取向结合设备的当前取向来决定程序启动时的初始取向.</p>
+
+<h3>二.UIViewController's Interface Orientation</h3>
+
+<p>当设备的取向发生变化的时候，系统会发送UIDeviceOrientationDidChangeNotification通知，一般情况下我们自己不必亲自处理此通知，因为UIKit框架已经获取通知并做处理了。
+有一点需要注意的是，不管什么取向，UIWindow的frame始终是不会变化的，可以认为其始终是Portrait的取向。还有就是当app启动的时候，UIViewController 都会从Portrait取向转到当前的取向。</p>
+
+<h4>1.声明UIViewController所支持的取向</h4>
+
+<div class="highlight"><pre><code class="objc"><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">shouldAutorotateToInterfaceOrientation:</span><span class="p">(</span><span class="n">UIInterfaceOrientation</span><span class="p">)</span><span class="nv">orientation</span>
+<span class="p">{</span>
+   <span class="k">if</span> <span class="p">((</span><span class="n">orientation</span> <span class="o">==</span> <span class="n">UIInterfaceOrientationPortrait</span><span class="p">)</span> <span class="o">||</span>
+       <span class="p">(</span><span class="n">orientation</span> <span class="o">==</span> <span class="n">UIInterfaceOrientationLandscapeLeft</span><span class="p">))</span>
+      <span class="k">return</span> <span class="nb">YES</span><span class="p">;</span>
+ 
+   <span class="k">return</span> <span class="nb">NO</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+<p>返回YES，则说明当前UIViewController支持此orientation，返回NO则不支持此orientation</p>
+
+<h4>2.One-part Rotation</h4>
+
+<p>UIViewController 有几个方法可以让子类来覆盖</p>
+
+<div class="highlight"><pre><code class="objc"><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">willRotateToInterfaceOrientation:</span><span class="p">(</span><span class="n">UIInterfaceOrientation</span><span class="p">)</span><span class="nv">toInterfaceOrientation</span> <span class="nf">duration:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="nv">duration</span><span class="p">;</span>
+</code></pre></div>
+
+
+<p>这个方法在旋转开始之前被调用.</p>
+
+<div class="highlight"><pre><code class="objc"><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">willAnimateRotationToInterfaceOrientation:</span><span class="p">(</span><span class="n">UIInterfaceOrientation</span><span class="p">)</span><span class="nv">interfaceOrientation</span> <span class="nf">duration:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="nv">duration</span><span class="p">;</span>
+</code></pre></div>
+
+
+<p>此方法是在旋转的动画的block中被调用的，也就是说，如果你需要在旋转的过程中添加额外的动画，则将代码添加于此处(当然得是animatable的属性的设置代码)。当此方法被调用的时候，UIViewController的view的bounds已是旋转之后的值了。当然还有一种方式是将旋转分成两步，只是这两个方法已是__OSX_AVAILABLE_BUT_DEPRECATED了，故不常用它便是，且其比一步的复杂些。</p>
+
+<div class="highlight"><pre><code class="objc"><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didRotateFromInterfaceOrientation:</span><span class="p">(</span><span class="n">UIInterfaceOrientation</span><span class="p">)</span><span class="nv">fromInterfaceOrientation</span><span class="p">;</span>
+</code></pre></div>
+
+
+<p>当旋转结束后，此方法会被调用。</p>
+
+<h3>三.UIViewController旋转的本质</h3>
+
+<p>为了探究在UIViewController旋转的过程中到底发生了什么，可以新建一个Single View的项目用来测试。
+ViewController设置为UIWindow的rootViewController.当旋转的时候rootViewController旋转相关的方法会被调用，且rootViewController的view会发生旋转。
+假设程序启动时，app的取向是Portrait，即如下图所示    <br/>
+<br>
+<img src="http://farm8.staticflickr.com/7116/7813372192_a9c89753d9.jpg" alt="" />
+<br>   <br/>
+当旋转，运行到willAnimateRotationToInterfaceOrientation之时，其view的bounds已是新的，只是其frame此时为(0 0; 300 480)，不过view本身的transform为旋转90度的变换(transform = [0, 1, -1, 0, 0, 0]),且view有animates相附，</p>
+
+<div class="highlight"><pre><code class="objc"><span class="n">animations</span> <span class="o">=</span> <span class="p">{</span> <span class="n">transform</span><span class="o">=&lt;</span><span class="n">CABasicAnimation</span><span class="o">:</span> <span class="mh">0x6a79840</span><span class="o">&gt;</span><span class="p">;</span> <span class="n">position</span><span class="o">=&lt;</span><span class="n">CABasicAnimation</span><span class="o">:</span> 
+<span class="mh">0x6a91fa0</span><span class="o">&gt;</span><span class="p">;</span> <span class="n">bounds</span><span class="o">=&lt;</span><span class="n">CABasicAnimation</span><span class="o">:</span> <span class="mh">0x6a920e0</span><span class="o">&gt;</span><span class="p">;</span> <span class="p">};</span>
+</code></pre></div>
+
+
+<p>可知其位置和bounds都有相关动画。
+<br>   <br/>
+<img src="http://farm9.staticflickr.com/8307/7813372286_56fbc2452d.jpg" alt="" />
+<br></p>
+
+<p>旋转结束之后为如下样子
+view的frame是(0 0; 300 480),只是进行了transform，且依据AutoresingMask进行了调整
+<br>   <br/>
+<img src="http://farm9.staticflickr.com/8429/7813372386_05eba9d8a4.jpg" alt="" />
+<br>   <br/>
+只有知道旋转的本质之后，很多事情理解起来就深刻多了。</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>iOS的三维透视投影</title>
+      <link href="/2012/07/ios-3d-perspective/"/>
+      <pubDate>2012-07-08T00:00:00+08:00</pubDate>
+      <author>海涛</author>
+      <guid>/2012/07/ios-3d-perspective</guid>
+      <content:encoded><![CDATA[<h4>一.概述</h4>
+
+<p>在iOS中使用CATransform3D这个结构体来表示三维的齐次坐标变换矩阵.
+齐次坐标是一种坐标的表示方法，n维空间的坐标需要用n+1个元素的坐标元组来表示,在<a href="https://developer.apple.com/library/mac/documentation/graphicsimaging/conceptual/drawingwithquartz2d/dq_affine/dq_affine.html#//apple_ref/doc/uid/TP30001066-CH204-CJBECIAD">Quartz 2D Transform</a>中就有关于齐次坐标的应用,那边是关于二维空间的变换，其某点的齐次坐标的最后一个元素始终设置为1。使用齐次坐标而不是简单的数学坐标是为了方便图形进行仿射变换，仿射变换可以通过仿射变换矩阵来实现，3D的仿射变换可以实现诸如 平移(translation)，旋转(rotation),缩放(scaling),切变(shear)等变换。如果不用齐次坐标那么进行坐标变换可能就涉及到两种运算了，加法（平移）和乘法（旋转，缩放），而使用齐次坐标以及齐次坐标变换矩阵后只需要矩阵乘法就可以完成一切了。上面的这些如果需要深入了解就需要去学习一下图形变换的相关知识，自己对矩阵的乘法进行演算。</p>
+
+<p>iOS中的CALayer的3D本质上并不能算真正的3D(其视点即观察点或者所谓的照相机的位置是无法变换的),而只是3D在二维平面上的投影，投影平面就是手机屏幕也就是xy轴组成的平面(注意iOS中为左手坐标系)，那么视点的位置是如何确定的呢？可以通过CATransform3D中的m34来间接指定， m34 = -1/z,其中z为观察点在z轴上的值,而Layer的z轴的位置则是通过anchorPoint来指定的，所谓的anchorPoint(锚点)就是在变换中保持不变的点，也就是某个Layer在变换中的原点,xyz三轴相交于此点。在iOS中，Layer的anchorPoint使用unit coordinate space来描述，unit coordinate space无需指定具体真实的坐标点而是使用layer bounds中的相对位置，下图展示了一个Layer中的几个特殊的锚点,  <br/>
+<img src="http://farm9.staticflickr.com/8164/7525485756_6782ed8ce6.jpg" alt="" /></p>
+
+<p> m34 = -1/z中，当z为正的时候，是我们人眼观察现实世界的效果，即在投影平面上表现出近大远小的效果，z越靠近原点则这种效果越明显，越远离原点则越来越不明显，当z为正无穷大的时候，则失去了近大远小的效果，此时投影线垂直于投影平面，也就是视点在无穷远处，CATransform3D中m34的默认值为0，即视点在无穷远处.</p>
+
+<p> 还有一个需要说明一下的就是齐次坐标到数学坐标的转换
+ 通用的齐次坐标为 (a, b, c, h),其转换成数学坐标则为 (a/h, b/h, c/h).</p>
+
+<h4>二.代数解释</h4>
+
+<p>假设一个Layer anchorPoint为默认的 (0.5, 0.5 ), 其三维空间中一个A点 (6, 0, 0)，m34 = -1/1000.0, 则此点往z轴负方向移动10个单位之后，则在投影平面上看到的点的坐标是多少呢？</p>
+
+<p>A点使用齐次坐标表示为 (6, 0, 0, 1)</p>
+
+<p>QuartzCore框架为我们提供了函数来算出所需要的矩阵，</p>
+
+<div class="highlight"><pre><code class="objc">    <span class="n">CATransform3D</span> <span class="n">transform</span> <span class="o">=</span> <span class="n">CATransform3DIdentity</span><span class="p">;</span>
+    <span class="n">transform</span><span class="p">.</span><span class="n">m34</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mf">1000.0</span><span class="p">;</span>
+    <span class="n">transform</span> <span class="o">=</span> <span class="n">CATransform3DTranslate</span><span class="p">(</span><span class="n">transform</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">);</span>
+</code></pre></div>
+
+
+<p>计算出来的矩阵为</p>
+
+<div class="highlight"><pre><code class="objc"> 
+<span class="p">{</span> <span class="mi">1</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>     <span class="mi">0</span><span class="p">;</span>   
+  <span class="mi">0</span><span class="p">,</span>    <span class="mi">1</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>     <span class="mi">0</span><span class="p">;</span>   
+  <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">1</span><span class="p">,</span>     <span class="o">-</span><span class="mf">0.001</span><span class="p">;</span>   
+  <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>  <span class="o">-</span><span class="mi">10</span><span class="p">,</span>    <span class="mf">1.01</span><span class="p">;</span>      
+<span class="p">}</span>   
+</code></pre></div>
+
+
+<p>其实上面的变换矩阵本质上是两个矩阵相乘得到的 变换矩阵 * 投影矩阵
+变换矩阵为</p>
+
+<div class="highlight"><pre><code class="objc"><span class="p">{</span><span class="mi">1</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">;</span>   
+ <span class="mi">0</span><span class="p">,</span>    <span class="mi">1</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">;</span>   
+ <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">1</span><span class="p">,</span>    <span class="mi">0</span><span class="p">;</span>   
+ <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>   <span class="o">-</span><span class="mi">10</span><span class="p">,</span>  <span class="mi">1</span><span class="p">;</span>      
+<span class="p">}</span>     
+</code></pre></div>
+
+
+<p>投影矩阵为</p>
+
+<div class="highlight"><pre><code class="objc"> 
+<span class="p">{</span><span class="mi">1</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">;</span>   
+ <span class="mi">0</span><span class="p">,</span>    <span class="mi">1</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">;</span>   
+ <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.001</span><span class="p">;</span>   
+ <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">1</span><span class="p">;</span>   
+<span class="p">}</span>     
+</code></pre></div>
+
+
+<p>上面的两个矩阵相乘则会得到最终的变换矩阵(如果忘记矩阵乘法的可以去看下线性代数复习下)，所以一个矩阵就可以完成变换和投影。</p>
+
+<p>将A点坐标乘上最终的变换矩阵，则得到
+{6, 0 , -10, 1.01}, 转换成数学坐标点为 {6/1.01, 0, 10/1.01},则可以知道其在投影平面上的投影点为
+{6/1.01, 0, 0} 也就是我们看到的变换后的点。其比之前较靠近原点。越往z轴负方向移动，则在投影平面上越靠近原点。</p>
+
+<h4>三.几何解释</h4>
+
+<p>将上面的例子使用几何的方式来进行解释分析，当我们沿着y轴的正方向向下看时候，可以得到如下的景象</p>
+
+<p><img src="http://farm8.staticflickr.com/7134/7525866072_efebf5cd22.jpg" alt="" /></p>
+
+<p> 虚线为投影线，其和x轴的交点即为A点的投影点。
+ 由相似三角形的定理我们很容易算出投影的点，</p>
+
+<p>  1000/(1000 + 10) = x/6,则x = 6*1000/1010 = 6/1.01</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Mac，iOS界面中的三维坐标系</title>
+      <link href="/2012/06/3d-coordinate-system/"/>
+      <pubDate>2012-06-22T00:00:00+08:00</pubDate>
+      <author>海涛</author>
+      <guid>/2012/06/3d-coordinate-system</guid>
+      <content:encoded><![CDATA[<h3>一. 三维坐标系</h3>
+
+<p>据说有一次笛卡尔生病了，躺在床上休息，但是他的大脑却没有休息，一只在寻思着通过什么手段把几何图形和代数方程关联起来，也就是几何图形中的每一个点怎么和方程的每一组解关联起来。这个时候他看到房顶上有一只蜘蛛在织网，蜘蛛空中爬来爬去。他想地上墙角的三面墙相交出三条线，把墙角作为原点，把这三条线作为数轴，那么蜘蛛某刻的位置可以通过这三条数轴上的数来表示，反过来，给定一组数便可以确定空间中的一点。后来笛卡尔发明了平面直角坐标系,当然上面的故事是三维空间的，只是为了说明，坐标系的作用是为了便于描述点的位置。（我们学过的除了平面直角坐标系这个二维坐标系外，还学过极坐标系，通过到原点的距离以及夹角角度来表示一个点。）</p>
+
+<p>后人在笛卡尔的平面坐标系的基础上发明了三维坐标系，常用的三维坐标系分两种：左手坐标系和右手坐标系。当确定了x轴，y轴方向之后可以通过左手或右手来确定z轴的方向。下图则是左手坐标系和右手坐标系的规则示意图: <br/>
+<img src="http://farm8.staticflickr.com/7117/7419361874_f5d16fb101.jpg" alt="" /></p>
+
+<p>弯曲 拇指，食指和中指使它们两两相互垂直，拇指指向x轴正方向，食指指向y轴正方向，中指指向z轴正方向 。左手坐标系使用左手，右手坐标系使用右手。（上面示意图中的左手坐标系或者右手坐标系整体旋转后性质不变，比如左手坐标系旋转后，使得y轴正方向向下，x轴正方向保持向右，它依然是左手坐标系。）</p>
+
+<p>另外还有一个左手或者右手定则来判断旋转的正方向，握住拳头，拇指指向旋转轴的正方向，四指弯曲的方向为旋转的正方向。左手坐标系使用左手来判定，右手坐标系使用右手来判定.   下图是右手的例子: <br/>
+<img src="http://farm6.staticflickr.com/5324/7419361824_7de70fa1af.jpg" alt="" /></p>
+
+<p><br></p>
+
+<h3>二. Mac，iOS界面中的坐标系</h3>
+
+<p>话说Mac,iOS中的各种坐标系总会让初学者摸不着头脑，一会儿这样一会儿那样。不过有一点是不变的，z轴的正方向总是指向观察者，也就是垂直屏幕平面向上。</p>
+
+<h4>1.NSView坐标系</h4>
+
+<p>在Mac中NSView的坐标系默认是右手坐标系（View其实是二维坐标系，但是为了方便我们可以假设其是三维坐标系，只是所有界面的变化都是在xy平面上），原点在左下角. NSView提供了一个可以用于覆盖的方法</p>
+
+<div class="highlight"><pre><code class="objc"><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isFlipped</span><span class="p">;</span>
+</code></pre></div>
+
+
+<p>此默认返回NO，当返回YES的时候，则坐标系变成左手坐标系，坐标原点变成左上角。 <br/>
+<img src="http://farm6.staticflickr.com/5328/7419981432_f6c7732dfe.jpg" alt="" /></p>
+
+<p>在Mac的AppKit中有很多界面组件本身就使用了Flipped Coordinate System(覆盖了上面的方法并返回YES)，如NSButton，NSTableview，NSSplitView 更详细的看这里  其中Cocoa Use of Flipped Coordinates
+ 这一节  <a href="https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/CocoaDrawingGuide/Transforms/Transforms.html">https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/CocoaDrawingGuide/Transforms/Transforms.html</a></p>
+
+<p> <br></p>
+
+<h4>2.UIView坐标系</h4>
+
+<p> 而在iOS的UIView中，则没有所谓的Flipped Coordinate的概念，统一使用左手坐标系，也就是坐标原点在左上角. <br/>
+ <img src="http://farm6.staticflickr.com/5192/7420067916_889152557b.jpg" alt="" /></p>
+
+<p><br></p>
+
+<h4>3.Quartz坐标系</h4>
+
+<p>Quartz（Core Graphics）坐标系使用的右手坐标系,原点在左下角,所以所有使用Core Graphics画图的坐标系都是右手坐标系，当使用CG的相关函数画图到UIView上的时候，需要注意CTM的Flip变换，要不然会出现界面上图形倒过来的现象。由于UIKit的提供的高层方法会自动处理CTM（比如UIImage的drawInRect方法），所以无需自己在CG的上下文中做处理。
+参见<a href="https://developer.apple.com/library/mac/#documentation/graphicsimaging/conceptual/drawingwithquartz2d/dq_overview/dq_overview.html#//apple_ref/doc/uid/TP30001066-CH202-CJBBAEEC">Quartz 2D Coordinate Systems</a></p>
+
+<h4>4.CALayer坐标系</h4>
+
+<p>这个有些变态了，其坐标系和平台有关，在Mac中CALayer使用的是右手坐标系，其原点在左下角；iOS中使用的左手坐标系，其原点在左上角。
+参见 <a href="http://developer.apple.com/library/ios/#DOCUMENTATION/Cocoa/Conceptual/CoreAnimation_guide/Articles/Layers.html#//apple_ref/doc/uid/TP40006082-SW1">Layer Coordinate System</a></p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>关于iOS App的切图</title>
+      <link href="/2012/06/image-slicing-for-ios-app/"/>
+      <pubDate>2012-06-07T00:00:00+08:00</pubDate>
+      <author>海涛</author>
+      <guid>/2012/06/image-slicing-for-ios-app</guid>
+      <content:encoded><![CDATA[<p>图形用户界面中的图形有两种实现方式，一种是用代码画出来，比如Quartz 2D技术，狠一点有OpenGL ES，另一种则是使用图片。 <br/>
+代码画的方式比较耗费程序员脑力,CPU或GPU; 图片则耗费磁盘空间,会增加app的体积.一般的app我们会偏重于使用图片来构建用户界面. <br/>
+设计师一般会使用PS来设计界面，所以在直接使用之前，有一个PSD到png的切图(Image Slicing)过程.下面是切图过程中可能要注意的几点. <br/>
+ <br></p>
+
+<h3>一.可重复元素</h3>
+
+<p>在用户界面的图形元素中，重复随处可见 ,所以我们利用好框架提供的接口, 以比较高的性价比创建用户界面。</p>
+
+<h4>1.Color Pattern</h4>
+
+<p>Color Pattern在Web设计中也经常会遇到比如网页的背景,甚至网络中可以找到专门收集各类可重复的纹理图案的站点,比如 <a href="http://subtlepatterns.com">http://subtlepatterns.com</a>.
+下面这是一个小图片模板 <br/>
+<br>
+<img src="http://farm8.staticflickr.com/7238/7160467573_a21e1c947b_t.jpg" alt="circles" />
+<br></p>
+
+<div class="highlight"><pre><code class="objc"><span class="n">UIColor</span> <span class="o">*</span><span class="n">circleColorPattern</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">colorWithPatternImage</span><span class="o">:</span>
+<span class="p">[</span><span class="n">UIImage</span> <span class="n">imageNamed</span><span class="o">:</span><span class="s">@&quot;circle_pattern.png&quot;</span><span class="p">]];</span>
+</code></pre></div>
+
+
+<p>这样便可以得到一个颜色模板,用这个颜色画或者填充某个区域的时候，模板图片会在指定的区域中进行平铺.比如把一个View的背景颜色设置成上面这个颜色，便会得到如下结果
+<br>
+<img src="http://farm8.staticflickr.com/7085/7160467655_e2806877c7.jpg" alt="circles_fill" />
+<br></p>
+
+<h4>2.resizableImage</h4>
+
+<p>除了整体平铺之外，很多时候我们希望某个图片的局部进行平铺，而其余部分则保持不变.
+比如常见的按钮，聊天的气泡背景或者图片的阴影边框.
+这里举个按钮的例子,一般情况下为了方便做按钮就直接切个按钮背景,如下图
+<img src="http://farm8.staticflickr.com/7219/7345749786_18422b630d_m.jpg" alt="button-blue" />
+但是自己看，你会发现按钮中间大都数像素都是横向重复的，所以可以使用iOS的图片接口来使用体积更小的图片实现相同的效果.
+首先使用PS的切图工具进行切图,下图中的切图逻辑是，左边切14像素(13像素加1像素，1像素为中间重复部分),右边切13像素.</p>
+
+<blockquote><p>Retina屏幕下一个单位对应着两个像素，这里的例子是非Retina下的情况，请注意</p></blockquote>
+
+<p><br>
+<img src="http://farm8.staticflickr.com/7071/7160590813_382d13dcec_z.jpg" alt="button-blue-slicing" />
+<br>
+<br></p>
+
+<p>切图后将左右合并，变成最终所需要的图片
+<br>
+<img src="http://farm8.staticflickr.com/7227/7160590679_c3ffb29b6e_z.jpg" alt="button-blue-sliced" />
+<br>
+图片宽度为27像素宽，中间第14个像素为中间重复的部分.</p>
+
+<div class="highlight"><pre><code class="objc"><span class="n">UIImage</span> <span class="o">*</span><span class="n">buttonBackgroundImage</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImage</span> <span class="n">imageNamed</span><span class="o">:</span><span class="s">@&quot;button_bkg.png&quot;</span><span class="p">]</span> 
+<span class="nl">resizableImageWithCapInsets:</span><span class="n">UIEdgeInsetsMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">13</span><span class="p">)];</span>
+<span class="p">[</span><span class="n">button</span> <span class="n">setBackgroundImage</span><span class="o">:</span><span class="n">buttonBackgroundImage</span> 
+<span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
+</code></pre></div>
+
+
+<p>resizableImageWithCapInsets:的参数是一个UIEdgeInsets的结构体类型,被capInsets覆盖到的区域将会保持不变，而未覆盖到的部分将会被用来平铺.</p>
+
+<p> 在iOS 5.0之前并没有这个方法，而是使用的另一个方法</p>
+
+<div class="highlight"><pre><code class="objc"> <span class="o">-</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="n">stretchableImageWithLeftCapWidth</span><span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">leftCapWidth</span> 
+<span class="nl">topCapHeight:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">topCapHeight</span><span class="p">;</span>
+</code></pre></div>
+
+
+<p>这个方法有局限性，它只能指定leftCapWidth和topCapHeight，然后只有一个像素能够重复，也就是rightCapWidth为 imageWidth-leftCapWidth-1,而bottomCapHeight为 imageHeight - topCapHeight -1,所以重复的始终是中间的那一个像素.</p>
+
+<p><br>
+<br></p>
+
+<h3>二.图片边缘锯齿和抗锯齿问题</h3>
+
+<p><br></p>
+
+<h4>1.需要抗锯齿</h4>
+
+<p>有时候需要在旋转的动画中使用到图片，比如按钮的旋转，图片的旋转，为了避免在旋转的过程中出现边缘锯齿，我们需要在切图的时候，在边缘上多留至少一像素的透明像素，因为iOS在处理图片的时候对于外边缘是不做抗锯齿处理的，但是对于图片内部的边缘则会做抗锯齿处理.</p>
+
+<h4>2.需要去除抗锯齿效果</h4>
+
+<p>当某个imageView的frame的origin.x或者origin.y 不为整数的时候，会出现你不想要的抗锯齿效果，这个时候本来清晰的图片边缘会变得模糊，而这不是你想要的，所以这个时候我们就要对frame的起点进行取整。</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Life Before ARC</title>
+      <link href="/2012/05/life-before-arc/"/>
+      <pubDate>2012-05-18T00:00:00+08:00</pubDate>
+      <author>海涛</author>
+      <guid>/2012/05/life-before-arc</guid>
+      <content:encoded><![CDATA[<p>最近在看一本书, 书名是 "Pro Multithreading and Memory Management for iOS and OS X",主要讲内存管理及多线程相关内容的. <br/>
+<img src="http://farm6.staticflickr.com/5240/7221562548_c08c9b581f_n.jpg" alt="Pro.Multithreading.and.Memory.Management.for.iOS.and.OS.X" /></p>
+
+<p>第一章讲的便是手动管理内存的相关知识.
+<br></p>
+
+<h3>一.概述</h3>
+
+<p>Objc和其他许多高级语言一样在对象的内存管理方便都使用了引用计数的方案.</p>
+
+<ul>
+<li>如果你创建了一个对象,你便拥有这个对象,此时对象的引用计数为1,</li>
+<li>当你想拥有一个不是你创建的对象的时候，可以对其使用retain方法,引用计数加1</li>
+<li>当你用完了一个对象无需再时候的时候，你需要对其使用release方法释放所有权,这时引用计数减1</li>
+<li>当一个对象的引用计数为0的时候,其dealloc方法将被调用将其销毁</li>
+<li>当一个对象被销毁后,你还通过其先前的引用进行操作,那就可能引发crash或者不可预料的异常,这是非常危险的.</li>
+</ul>
+
+
+<p>用来创建对象的方法的名称都是有一定的规律的,方法为以下或者以以下各种方法名打头的方法(但必须遵守驼峰命名规则,比如newer便不可以用作创建对象的方法名)都是用来创建对象的,在我们自己定义的用来创建对象的方法也需要遵守此规则</p>
+
+<ul>
+<li>alloc 分配内存</li>
+<li>new  NSObject中[NSObject new]等同于 [[NSObject alloc] init]</li>
+<li>copy 复制出一个新对象</li>
+<li>mutableCopy 复制出一个可变(如数组可增删对象)的新对象</li>
+</ul>
+
+
+<p><br></p>
+
+<p>如果一个函数返回一个新创建的对象 比如 [NSArray array] 这样的,调用者对返回的对象并没有拥有权,但是在返回的时候新建的对象又不能在返回前释放,那该如何实现呢?
+下面是一个解决此类问题的例子</p>
+
+<div class="highlight"><pre><code class="objc"><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">object</span><span class="p">{</span>
+    <span class="kt">id</span> <span class="n">obj</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span><span class="c1">//创建对象</span>
+    <span class="p">[</span><span class="n">obj</span> <span class="n">autorelease</span><span class="p">];</span><span class="c1">//释放对象的所有权,这个时候对象并不会立即销毁,因为此时对象的所有者为当前活动的autoreleasePool</span>
+    <span class="k">return</span> <span class="n">obj</span><span class="p">;</span><span class="c1">//返回对象</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+<p>当某个对象调用autorelease方法后,其会被加入autoreleasePool,当autoreleasePool清空的时候，这个对象会被释放并销毁.</p>
+
+<p><br></p>
+
+<h3>二.引用计数的实现原理</h3>
+
+<p><br></p>
+
+<p>alloc方法的调用堆栈如下</p>
+
+<div class="highlight"><pre><code class="objc"><span class="k">+</span><span class="nf">alloc</span>
+<span class="k">+</span><span class="nf">allocWithZone:</span>
+<span class="n">class_createInstance</span>
+<span class="n">calloc</span>
+</code></pre></div>
+
+
+<p>class_createInstance方法的源码可以在苹果开源的runtime中找到 <a href="http://opensource.apple.com/source/objc4/objc4-493.11/runtime/objc-runtime-new.mm">http://opensource.apple.com/source/objc4/objc4-493.11/runtime/objc-runtime-new.mm</a>,
+class_createInstance根据不同的情况调用calloc或者malloc去分配内存块.</p>
+
+<p>那retainCount,retain,release是如何实现的呢?
+以下为各个方法的调用栈</p>
+
+<div class="highlight"><pre><code class="objc"><span class="k">-</span><span class="nf">retainCount</span> 
+<span class="n">__CFDoExternRefOperation</span>
+<span class="n">CFBasicHashGetCountOfKey</span>
+</code></pre></div>
+
+
+
+
+<div class="highlight"><pre><code class="objc"><span class="k">-</span><span class="nf">retain</span> 
+<span class="n">__CFDoExternRefOperation</span> 
+<span class="n">CFBasicHashAddValue</span>
+</code></pre></div>
+
+
+
+
+<div class="highlight"><pre><code class="objc"><span class="k">-</span><span class="nf">release</span> 
+<span class="n">__CFDoExternRefOperation</span> 
+<span class="n">CFBasicHashRemoveValue</span>
+</code></pre></div>
+
+
+<p>我们可以发现retainCount,retain,release使用到了同一个CF函数<code>__CFDoExternRefOperation</code>,此函数是开源的，代码在下面的文件中
+<a href="http://www.opensource.apple.com/source/CF/CF-635.21/CFRuntime.c">http://www.opensource.apple.com/source/CF/CF-635.21/CFRuntime.c</a>.
+对象的引用计数的信息保存在一个哈希表中.</p>
+
+<p><br></p>
+
+<h3>三.自动释放池(NSAutoreleasePool)的实现原理</h3>
+
+<p>我们先看一个简单的例子</p>
+
+<div class="highlight"><pre><code class="objc"><span class="n">NSAutoreleasePool</span> <span class="o">*</span><span class="n">pool</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSAutoreleasePool</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span> 
+<span class="kt">id</span> <span class="n">obj</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+<span class="p">[</span><span class="n">obj</span> <span class="n">autorelease</span><span class="p">];</span>
+<span class="p">[</span><span class="n">pool</span> <span class="n">drain</span><span class="p">];</span><span class="c1">//等同于[pool release],autorelease pool是不能被retain的</span>
+</code></pre></div>
+
+
+<p><img src="http://farm6.staticflickr.com/5332/7225706146_bec59b116a.jpg" alt="Autorelase Pool" /></p>
+
+<p>当对objc调用autorelease方法时候，便释放其所有权,此时当前活动的autorelease pool拥有此对象,当当前活动autorelease pool被销毁时,autorelease pool所拥有的所有对象会收到release消息.
+AutoreleasePool不能调用autorelease方法，否则会报错. <br/>
+<br>
+很多时候我们发现并不需要自己去创建Autorelease Pool,这是为什么呢？
+因为在主线程中每一次RunLoop开始的时候会自动创建一个Autorelease Pool,结束的时候销毁这个Autorelease Pool
+<img src="http://farm8.staticflickr.com/7233/7225706212_8c66a0cb80.jpg" alt="Runloop Autorelease Pool" />
+AutoreleasePool是可以嵌套的,你可以想象成每创建一个NSAutoreleasePool对象的时候都将其push到一个栈中，栈顶的为当前活动的Autorelease Pool,当Autorelease Pool释放的时候会从这个栈中pop掉。</p>
+
+<p>有时候我们为了程序的性能考虑，需要自己在适当的地方加上autorelease pool,以便及时释放掉内存.比如下面这种情况</p>
+
+<div class="highlight"><pre><code class="objc"><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">numberOfImages</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">NSAutoreleasePool</span> <span class="o">*</span><span class="n">pool</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSAutoreleasePool</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+    <span class="c1">//Loading images, etc.</span>
+    <span class="c1">//Too many autoreleased objects exist. </span>
+    <span class="p">[</span><span class="n">pool</span> <span class="n">drain</span><span class="p">];</span>
+    <span class="c1">//All the autoreleased objects are released by [pool drain]. </span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+<p>如果不及时释放内存，则多次循环后图片和相关资源占用着内存，瞬间使得内存占用飙升。</p>
+
+<p>和autorelease相关的源码在此文件中 <a href="http://opensource.apple.com/source/objc4/objc4-493.11/runtime/objc-arr.mm">http://opensource.apple.com/source/objc4/objc4-493.11/runtime/objc-arr.mm</a>
+AutoreleasePool的实现为AutoreleasePoolPage类，是用C++来实现的。
+其中有一个重要的方法需要说明一下的,</p>
+
+<ul>
+<li>objc_autoreleasePoolPush 创建一个AutoreleasePool并push到堆栈中</li>
+<li>objc_autorelease 将对象放到当前活动的AutoreleasePool中</li>
+<li>objc_autoreleasePoolPop 将当前活动的AutoreleasePool从堆栈中pop出去(即被销毁)</li>
+</ul>
+
+
+<div class="highlight"><pre><code class="objc"><span class="n">NSAutoreleasePool</span> <span class="o">*</span><span class="n">pool</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSAutoreleasePool</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span> <span class="c1">//等价于objc_autoreleasePoolPush() </span>
+<span class="kt">id</span> <span class="n">obj</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+<span class="p">[</span><span class="n">obj</span> <span class="n">autorelease</span><span class="p">];</span><span class="c1">//等价于 objc_autorelease(obj) </span>
+<span class="p">[</span><span class="n">pool</span> <span class="n">drain</span><span class="p">];</span><span class="c1">// 等价于 objc_autoreleasePoolPop(pool) </span>
+</code></pre></div>
+
+
+
+]]></content:encoded>
+    </item>
+    
+  </channel>
+</rss>
