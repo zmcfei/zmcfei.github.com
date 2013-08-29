@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: misc | xiaolai]]></title>
+  <link href="http://xiaolai.github.com/blog/categories/misc/atom.xml" rel="self"/>
+  <link href="http://xiaolai.github.com/"/>
+  <updated>2012-12-23T14:17:26+08:00</updated>
+  <id>http://xiaolai.github.com/</id>
+  <author>
+    <name><![CDATA[xiaolai]]></name>
+    <email><![CDATA[lixiaolai@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Learned a new argument for cd command]]></title>
+    <link href="http://xiaolai.github.com/blog/2012/09/20/learned-a-new-argument-for-cd-command/"/>
+    <updated>2012-09-20T00:46:00+08:00</updated>
+    <id>http://xiaolai.github.com/blog/2012/09/20/learned-a-new-argument-for-cd-command</id>
+    <content type="html"><![CDATA[<p>It’s a nice post for “newbies”: <a href="http://wiseheartdesign.com/articles/2010/11/12/the-designers-guide-to-the-osx-command-prompt">The Designer’s Guide to the OSX Command Prompt - A Tutorial for the Modern Web Designer</a>.</p>
+
+<p>I googled around a little, learned that <strong>pwd</strong> stands for “<strong>P</strong>resent <strong>W</strong>orking <strong>D</strong>irectory”…</p>
+
+<p>But when I found out a “new” (new only for me) argument <code>cd -</code>, I hated myself for having missed such a useful functinality for years simply because I didn’t read the help!</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Got an auto-generated-toc for pages...]]></title>
+    <link href="http://xiaolai.github.com/blog/2012/09/17/got-an-auto-generated-toc-for-pages-dot-dot-dot/"/>
+    <updated>2012-09-17T15:05:00+08:00</updated>
+    <id>http://xiaolai.github.com/blog/2012/09/17/got-an-auto-generated-toc-for-pages-dot-dot-dot</id>
+    <content type="html"><![CDATA[<p>Following the instruction of <a href="https://twitter.com/#!/brianclapper">Brain Clapper</a>’s post, “<a href="http://brizzled.clapper.org/blog/2012/02/04/generating-a-table-of-contents-in-octopress/">Generating a Table of Contents in Octopress</a>”, I added an auto TOC for pages (rather than merely for post), see the result here: “<a href="http://xiaolai.github.com/notes/Rails.html">Notes on Rails</a>”.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Hello]]></title>
+    <link href="http://xiaolai.github.com/blog/2012/09/16/hello/"/>
+    <updated>2012-09-16T14:05:00+08:00</updated>
+    <id>http://xiaolai.github.com/blog/2012/09/16/hello</id>
+    <content type="html"><![CDATA[<p>Set up a blog based on <a href="https://github.com/mojombo/jekyll">jeklly</a> and <a href="http://octopress.org">octopress</a> on <a href="http://github.com">http://github.com</a>, and installed <a href="https://github.com/amelandri/darkstripes">DarkStripes theme</a>.</p>
+
+<p>Learned a little bit markdown syntax. … and left “<a href="https://github.com/Shopify/liquid/wiki/Liquid-for-Designers">liquid</a>” in the todo list.</p>
+
+<p>Hello, world!</p>
+]]></content>
+  </entry>
+  
+</feed>

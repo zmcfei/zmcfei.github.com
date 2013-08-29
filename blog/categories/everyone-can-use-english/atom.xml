@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: everyone-can-use-english | xiaolai]]></title>
+  <link href="http://xiaolai.github.com/blog/categories/everyone-can-use-english/atom.xml" rel="self"/>
+  <link href="http://xiaolai.github.com/"/>
+  <updated>2012-12-23T14:17:26+08:00</updated>
+  <id>http://xiaolai.github.com/</id>
+  <author>
+    <name><![CDATA[xiaolai]]></name>
+    <email><![CDATA[lixiaolai@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[重写《人人都能用英语》]]></title>
+    <link href="http://xiaolai.github.com/blog/2012/10/20/Rewrite-Everyone-Can-Use-English/"/>
+    <updated>2012-10-20T13:25:00+08:00</updated>
+    <id>http://xiaolai.github.com/blog/2012/10/20/Rewrite-Everyone-Can-Use-English</id>
+    <content type="html"><![CDATA[<p>两年前，着手写《人人都能用英语》，成稿一段时间后，由于种种原因，并没有正式出版。随后只因事物繁忙，搁置至今。最近在<a href="http://lixiaolai.com/blog/2012/10/15/ruby-on-rails-is-my-new-start/">学Ruby on Rails</a>、以及写《<a href="http://lixiaolai.com/alpha/on-learning/">学习学习再学习</a>》的过程中，又重新审视了之前的文稿，有点庆幸当初并未出版。我将花几周时间做准备，然后重新开始写——不过，确定的是，坚决不再使用传统出版渠道——只发表在互联网上，甚至应该做成一个互联网应用才好。</p>
+]]></content>
+  </entry>
+  
+</feed>
