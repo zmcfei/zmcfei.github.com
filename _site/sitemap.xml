@@ -11,90 +11,27 @@
   </url>
   
   <url>
-    <loc>/2013/06/git-fork-workflow/</loc>
+    <loc>/2013/08/%E6%90%9C%E7%B4%A2%E5%85%A8%E8%B2%8C/</loc>
     
-    <lastmod>2013-06-23T00:00:00+08:00</lastmod>
-    
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  
-  <url>
-    <loc>/2013/06/cocoapods-101/</loc>
-    
-    <lastmod>2013-06-23T00:00:00+08:00</lastmod>
+    <lastmod>2013-08-27T00:00:00+08:00</lastmod>
     
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   
   <url>
-    <loc>/2013/05/discourse-install-guide/</loc>
+    <loc>/2013/06/%E7%A8%8B%E5%BA%8F%E5%B4%A9%E6%BA%83%E7%9A%84%E5%8E%9F%E5%9B%A0/</loc>
     
-    <lastmod>2013-05-25T00:00:00+08:00</lastmod>
-    
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  
-  <url>
-    <loc>/2013/05/git-revisions/</loc>
-    
-    <lastmod>2013-05-09T00:00:00+08:00</lastmod>
+    <lastmod>2013-06-09T00:00:00+08:00</lastmod>
     
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   
   <url>
-    <loc>/2013/04/git-reflog/</loc>
+    <loc>/2013/01/tmp/</loc>
     
-    <lastmod>2013-04-26T00:00:00+08:00</lastmod>
-    
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  
-  <url>
-    <loc>/2013/04/git-keynote/</loc>
-    
-    <lastmod>2013-04-19T00:00:00+08:00</lastmod>
-    
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  
-  <url>
-    <loc>/2013/04/ios-cookie/</loc>
-    
-    <lastmod>2013-04-02T00:00:00+08:00</lastmod>
-    
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  
-  <url>
-    <loc>/2013/03/web/</loc>
-    
-    <lastmod>2013-03-25T00:00:00+08:00</lastmod>
-    
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  
-  <url>
-    <loc>/2013/03/seek-differences/</loc>
-    
-    <lastmod>2013-03-20T00:00:00+08:00</lastmod>
-    
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  
-  <url>
-    <loc>/2013/03/core-text/</loc>
-    
-    <lastmod>2013-03-11T00:00:00+08:00</lastmod>
+    <lastmod>2013-01-01T00:00:00+08:00</lastmod>
     
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
