@@ -1,6 +1,5 @@
 ---
 layout: post
-title: 技术总结与回忆
 categories:
 - Programming Review
 tags:
@@ -9,7 +8,9 @@ tags:
 ---------
 
 
-##通过Larbin学Makefile
+通过Larbin学Makefile
+=====================
+
 基本知识点：  
 **自动变量**  
 自动变量也不需要我们定义，但我们可以在Makefile中使用，如前面看到的那两个特殊的变量$@和$^，还有一些常用的自动变量列入下表，其含义如下：
