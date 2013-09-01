@@ -3,71 +3,73 @@ layout: post
 categories:
 - 编程经验
 tags:
-- tcpdump
+- Snort
 ---
-##Linux下网络抓包命令tcpdump详解
+##修改snort的socket模式的输出内容  
 
-tcpdump采用命令行方式，它的命令格式为：  
-    　　tcpdump[ -adeflnNOpqStvx ] [ -c 数量 ] [ -F 文件名 ]  
-　　　　　　　　　　[ -i 网络接口 ] [ -r 文件名] [ -s snaplen ]  
-　　　　　　　　　　[ -T 类型 ] [ -w 文件名 ] [表达式 ]  
+###snort的输出方式复用
+实践发现snort可以同时应用fast和unsock两种模式。
+-A fast -A unsock 不过必须fast后unsock
+###snort源码部分函数学习
 
-    
+阅读snort源码中snort自带socket发送日志功能，可以说非常方便。  
+但是如果需要用snort的检测模块输出我们想要的数据包某段值，就需要改snort的源码了。  
+下面是我之前跟踪过的记录，简单点说，我们可以根据fast日志输出中的特殊符号，如->来找ip和端口等。特殊位置，这样我们就可以找到snort中对应解析后的结构体。  
 
- - -a 　　　将网络地址和广播地址转变成名字；
- - -d 　　　将匹配信息包的代码以人们能够理解的汇编格式给出；
- - -dd 　　 将匹配信息包的代码以c语言程序段的格式给出；
- - -ddd 　　将匹配信息包的代码以十进制的形式给出；
- - -e 　　　在输出行打印出数据链路层的头部信息；
- - -f 　　　将外部的Internet地址以数字的形式打印出来；
- - -l 　　　使标准输出变为缓冲行形式；
- - -n 　　　不把网络地址转换成名字；
- - -t 　　　在输出的每一行不打印时间戳；
- - -v 　　　输出一个稍微详细的信息，例如在ip包中可以包括ttl和服务类型的信息；
- - -vv 　　 输出详细的报文信息；
- - -c 　　　在收到指定的包的数目后，tcpdump就会停止；
- - -F 　　　从指定的文件中读取表达式,忽略其它的表达式；
- - -i 　　　指定监听的网络接口；
- - -r 　　　从指定的文件中读取包(这些包一般通过-w选项产生)；
- - -w 　　　直接将包写入文件中，并不分析和打印出来；
- - -T 　　　将监听到的包直接解释为指定的类型的报文，常见的类型有rpc
+*结构体 in_addr 用来表示一个32位的IPv4地址.
 
-（远程过程调用）和snmp（简单网络管理协议；）
+extern void *memcpy(void *destin, void *source, unsigned n);  ###由source指向地址为起始地址的连续n个字节的数据复制到以destin指向地址为起始地址的空间内。
 
-示例：
+```
+public: int SendTo( 
+　　SOCKET s; 
+　　unsigned char buffer __gc[], 
+　　int size, 
+　　SocketFlags socketFlags, 
+　　sockaddr FAR *addr 
+　　int len 
+　　); 
+```
+>返回值：实际发送数据的长度。   
+>parameter :   
+　　s 套接字   
+　　buff 待发送数据的缓冲区   
+　　size 缓冲区长度   
+　　Flags 调用方式标志位, 一般为0, 改变Flags，将会改变Sendto发送的形式   
+　　addr （可选）指针，指向目的套接字的地址   
+　　len addr所指地址的长度  
 
-1、如果要抓eth0的包，命令格式如下：
+    size_t fwrite(const void*buffer,size_t size,size_t count,FILE*stream); 
 
-tcpdump -i eth0 -w /tmp/eth0.cap
+　　注意：这个函数以二进制形式对文件进行操作，不局限于文本文件   
+　　返回值：返回实际写入的数据块数目   
+　　（1）buffer：是一个指针，对fwrite来说，是要输出数据的地址。   
+　　（2）size：要写入内容的单字节数；   
+　　（3）count:要进行写入size字节的数据项的个数；   
+　　（4）stream:目标文件指针。 
 
-2、如果要抓192.168.1.20的包，命令格式如下：
 
-tcpdump -i etho host 192.168.1.20 -w /tmp/temp.cap
 
-3、如果要抓192.168.1.20的ICMP包，命令格式如下：
+ 
 
-tcpdump -i etho host 192.168.1.20 and icmp -w /tmp/icmp.cap
+通过寻找unsock下snort的ip输出和时间输出
 
-4、如果要抓192.168.1.20的除端口10000,10001,10002以外的其它包，命令格式如下：
+找此结构是通过->ip之间的符号找到LogIpAddrs函数，输出ip->ip。
 
-tcpdump -i etho host 192.168.1.20 and ! port 10000 and ! port 10001 and ! port 10002 -w /tmp/port.cap
+printf("!!!!!!!!!!!!!%s:%d\n",inet_ntoax(GET_SRC_ADDR(p)), p->sp);可以在输出结构体p中的ip和端口
 
-5、假如要抓vlan 1的包，命令格式如下：
+在packet结构体中有：x->ip4_header->source 和x->iph->ip_src 存放原ip地址。
 
-tcpdump -i eth0 port 80 and vlan 1 -w /tmp/vlan.cap
+顺藤摸瓜找到：inet_ntoax(GET_SRC_ADDR(p)), p->sp   ########输出ip和端口。（怀疑inet_ntoax是inet_ntoa的变体函数，在snort的头文件中实现）
 
-6、假如要抓pppoe的密码，命令格式如下：
+　linux下：   
+　　函数声明：char *inet_ntoa (struct in_addr);   
+　　返回点分十进制的字符串在静态内存中的指针。
 
-tcpdump -i eht0 pppoes -w /tmp/pppoe.cap
+printf("@@@@@@@@@@@@%s:%d\n",inet_ntoax(GET_SRC_ADDR(p)), p->sp);   ##可以把p中的ip和端口输出。
 
-7、假如要抓eth0的包，抓到10000个包后退出，命令格式如下：
+查找pkt是否有ip。。等信息
 
-tcpdump -i eth0 -c 10000 -w /tmp/temp.cap
+（2）时间戳LogTimeStamp(data->log, p);在这里实现。同理也很简单。  
 
-8、在后台抓eth0在80端口的包，命令格式如下：
-
-nohup tcpdump -i eth0 port 80 -w /tmp/temp.cap &
-
-########################
-
-自己用的命令：：tcpdump -i eth0 -w /tmp/eth0.cap -s0   否则抓的包不全，没有内容
+建立Alertpkt_txt的结构体，装入msg ip 时间戳 端口。用socket传结构体，目的达到。
