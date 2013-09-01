@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # This is the default format. 
 # For more see: http://jekyllrb.com/docs/permalinks/
 permalink: /:categories/:year/:month/:day/:title 
@@ -129,3 +130,11 @@ JB :
   #   ./_includes/custom/[HELPER]
   # where [HELPER] is the name of the helper you are overriding.
   
+=======
+markdown: rdiscount
+permalink: /:year/:month/:title/
+baseurl: /
+author: 海涛
+pygments: true
+paginate: 24
+>>>>>>> 75db1da11a5fbcad23096c2f0d1c9be0141c39dd
