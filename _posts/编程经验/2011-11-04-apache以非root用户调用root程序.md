@@ -5,12 +5,12 @@ categories:
 tags:
 - 第三方代理
 ---
-#apache以非root用户调用root程序
+##apache以非root用户调用root程序
 
 **使用第三方代理**，就可以使cgi获得root权限。  
 思路是 apache执行脚本----》执行 c程序（获得root）---》执行目的cgi（需要root权限）。
 
-```c代码：
+```
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
