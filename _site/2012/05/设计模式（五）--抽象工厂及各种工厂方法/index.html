@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="海涛" />
+    <title>设计模式（五）  抽象工厂及各种工厂方法 | 海涛</title>
+    <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAD/APr59wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIiIiIiAAAiIiIiIiIAACIiIiIiIgERERERERIiAREREREREiIBERERERESIgERIiIiERIiAREiIiIREiIBESIhERESIgERIiERERIiAREiIiIiIiIBESIiIiIiIgERIiIiIiIiAREREREREAABEREREREQAAERERERERAADgAQAA4AEAAOABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAA8AAAAPAAAADwAA" rel="icon" type="image/x-icon" />
+    <link href="/feed/" rel="alternate" title="海涛" type="application/atom+xml" />
+    
+    <link rel="stylesheet" href="/media/css/highlight.css">
+    <link href='/media/webfonts/ss-social.css' rel='stylesheet'>
+    <link href='/media/webfonts/ss-standard.css' rel='stylesheet'>
+    <link href="/media/css/screen.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <div class="buttons">
+          <a href="/" class="ss-icon" title="Go to homepage">home</a>
+          <a href="/categories" class="ss-icon" title="Category" >list</a>
+          <a href="/tags" class="ss-icon" title="Tag Cloud" >tags</a>
+          <a href="/guestbook" class="ss-icon" title="Guest Book" >talk</a>
+          <a href="/about" class="ss-icon" title="About" >user</a>
+          <a href="/feed" class="ss-icon" title="Subscribe by RSS" >rss</a>
+        </div>
+        <h1>设计模式（五）  抽象工厂及各种工厂方法</h1>
+        </header>
+        <hr>
+        <article class="content">
+        <section class="post">
+<h2>设计模式（五） -- 抽象工厂及各种工厂总结</h2>
+
+<h3>1.解释</h3>
+
+<p>在抽象工厂模式中，有一个产品族的概念：所谓的产品族，是指位于不同产品等级结构中功能相关联的产品组成的家族。抽象工厂模式所提供的一系列产品就组成一个产品族；而工厂方法提供的一系列产品称为一个等级结构。我们依然拿生产汽车的例子来说明他们之间的区别。</p>
+
+<p>其实感觉解释都是废话，还是看uml图 和代码吧。。</p>
+
+<p>   <img src="http://www.cnblogs.com/images/cnblogs_com/zhenyulu/Pic46.gif" alt="enter image description here" /></p>
+
+<pre><code>interface IProduct1 {
+    public void show();
+}
+interface IProduct2 {
+    public void show();
+}
+
+class Product1 implements IProduct1 {
+    public void show() {
+        System.out.println("这是1型产品");
+    }
+}
+class Product2 implements IProduct2 {
+    public void show() {
+        System.out.println("这是2型产品");
+    }
+}
+
+interface IFactory {
+    public IProduct1 createProduct1();
+    public IProduct2 createProduct2();
+}
+class Factory implements IFactory{
+    public IProduct1 createProduct1() {
+        return new Product1();
+    }
+    public IProduct2 createProduct2() {
+        return new Product2();
+    }
+}
+
+public class Client {
+    public static void main(String[] args){
+        IFactory factory = new Factory();
+        factory.createProduct1().show();
+        factory.createProduct2().show();
+    }
+}
+</code></pre>
+
+<p><strong>抽象工厂模式的优点</strong><br/>
+        抽象工厂模式除了具有工厂方法模式的优点外，最主要的优点就是可以在类的内部对产品族进行约束。所谓的产品族，一般或多或少的都存在一定的关联，抽象工厂模式就可以在类内部对产品族的关联关系进行定义和描述，而不必专门引入一个新的类来进行管理。</p>
+
+<h3>2.工厂的比较</h3>
+
+<p>引用：sopk00 对几个工厂的比较<br/>
+<strong>个人感觉</strong><br/>
+1. 简单工厂：工厂可以创建同一系列的产品，产品的接口一致，但工厂就要根据参数进行判断到底创建哪种产品
+卖早饭的张婆婆：可以做茶叶蛋，包子，稀饭<br/>
+2. 工厂方法：可以有多种工厂，工厂有共同的接口，一个工厂只能产生一种产品，比起简单工厂，工厂方法就不需要判断，耦合度低了不少
+刘老板：只卖包子的包子铺，只卖稀饭的稀饭庄<br/>
+3. 抽象工厂：可以产生多个系列的产品，有2个维度的产品
+饮料店老板：可乐系列产品、咖啡系列产品，每种系列产品又分小杯、中杯、大杯</p>
+
+<h3>3.应用</h3>
+
+<p>引用jigenghua的话说：
+在一个类里面, 当需要创建实例时:
+01.如果只需创建一个实例, 直接用new, 直接高效, java初学者理应如此, 若用工厂模式, 小题大做, 故弄玄虚;</p>
+
+<p>02.如果只需创建少量实例, 又想证实自己编程水平已过菜鸟级别, 可在单独一个小类中专门写new, new完记得返回新创建的引用给需求者, 这些new语句通常都是写在那个小类的单个静态方法中, 好处是调用时不用生成那个小类的实例, 而那个小类, 就是所谓的简单工厂模式;</p>
+
+<p>03.如果要创建大量实例, 从类继承结构上来看, 这些实例都是同一个父亲,可以考虑用工厂方法模式.</p>
+
+<p>04.如果要创建大量实例, 从类继承结构上来看, 这些实例有不同的父亲, 不管他们是否有相同的爷爷, 是不能采用工厂方法模式的, 得用抽象工厂模式. 这里, 抽象工厂模式的名称来由, 网上都是讳莫如深, 不要以为这种模式中加了一级抽象接口, 想当然就是抽象工厂模式, 须知工厂方法模式也是加了一级抽象接口的, 既然如此, 抽象工厂模式, 到底抽了谁们的象, 抽的又是什么象, 只可意会, 不可言传.
+，从继承结构上来看这些实例的类：如果具有相同的父类，..</p>
+
+</section>
+<section class="meta">
+<span class="author">
+  <a href="http://geeklu.com">海涛</a>
+</span>
+<span class="time">
+  /
+  <time datetime="2012-05-29">2012-05-29</time>
+</span>
+<br />
+<span class="license">
+  Published under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">(CC) BY-NC-SA</a>
+</span>
+
+<span class="categories">
+  in categories
+  
+  <a href="/categories/#设计模式1" title="设计模式1">设计模式1</a>&nbsp;
+  
+</span>
+
+
+<span class="tags">
+  tagged with 
+  
+  <a href="/tags/#设计模式" title="设计模式">设计模式</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="comment">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'geeklu'; // required: replace example with your forum shortname
+    var disqus_url = '/2012/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%94%EF%BC%89--%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E5%8F%8A%E5%90%84%E7%A7%8D%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95/';
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+<script type="text/javascript">
+$(function(){
+  $(document).keydown(function(e) {
+    var url = false;
+        if (e.which == 37 || e.which == 74) {  // Left arrow and J
+            
+        url = '/2012/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89--%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95/';
+        
+        }
+        else if (e.which == 39 || e.which == 75) {  // Right arrow and K
+            
+        url = '/2012/07/%E7%BA%BF%E7%A8%8B%E9%97%B4%E7%9A%84%E4%BE%9D%E8%B5%96%E5%90%AF%E5%8A%A8--%E4%BF%A1%E5%8F%B7%E5%92%8C%E6%A7%BD/';
+        
+        }
+        if (url) {
+            window.location = url;
+        }
+  });
+})
+</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2013 by <a href="http://zmcfei.github.io/about/">Haitao</a> | <span class="label label-info">2013-08-31 15:06:27 CST</span></small></p>
+    </footer>
+
+    </div>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-12936429-2']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

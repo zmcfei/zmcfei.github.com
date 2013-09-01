@@ -1,0 +1,6 @@
+markdown: rdiscount
+permalink: /:year/:month/:title/
+baseurl: /
+author: 海涛
+pygments: true
+paginate: 24

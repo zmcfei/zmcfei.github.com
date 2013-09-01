@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="海涛" />
+    <title>线程间的依赖启动  信号和槽 | 海涛</title>
+    <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAD/APr59wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIiIiIiAAAiIiIiIiIAACIiIiIiIgERERERERIiAREREREREiIBERERERESIgERIiIiERIiAREiIiIREiIBESIhERESIgERIiERERIiAREiIiIiIiIBESIiIiIiIgERIiIiIiIiAREREREREAABEREREREQAAERERERERAADgAQAA4AEAAOABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAA8AAAAPAAAADwAA" rel="icon" type="image/x-icon" />
+    <link href="/feed/" rel="alternate" title="海涛" type="application/atom+xml" />
+    
+    <link rel="stylesheet" href="/media/css/highlight.css">
+    <link href='/media/webfonts/ss-social.css' rel='stylesheet'>
+    <link href='/media/webfonts/ss-standard.css' rel='stylesheet'>
+    <link href="/media/css/screen.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <div class="buttons">
+          <a href="/" class="ss-icon" title="Go to homepage">home</a>
+          <a href="/categories" class="ss-icon" title="Category" >list</a>
+          <a href="/tags" class="ss-icon" title="Tag Cloud" >tags</a>
+          <a href="/guestbook" class="ss-icon" title="Guest Book" >talk</a>
+          <a href="/about" class="ss-icon" title="About" >user</a>
+          <a href="/feed" class="ss-icon" title="Subscribe by RSS" >rss</a>
+        </div>
+        <h1>线程间的依赖启动  信号和槽</h1>
+        </header>
+        <hr>
+        <article class="content">
+        <section class="post">
+<h2>线程间依赖启动----信号和槽</h2>
+
+<p>其实信号和槽的概念来源与QT，简单来说是一个线程制造了一个槽，这个槽使用来接收信号的。
+当另一个线程到达某一条件后，发出该槽的信号，带槽的线程就可以运行槽函数了。</p>
+
+<p>《《在开发一个复杂工程的时候，经常会遇到这样一个问题：整个系统被分成数个模块，每个模块提供有限的功能，由上层调用组成整个系统，为了保证每个模块的独立性，我们经常会尽量限制模块与模块之间的直接联系，比如每个模块只提供有限的API或者COM接口，而内部实现则完全封闭起来。 但有的时候会出一些设计要求，必须能够使模块之间能够直接通讯，而这两个模块往往处于不同的逻辑层次，之间相差甚远，如何设计它们之间的调用模式使整个工程维持整洁变得非常困难，比如模块直接直接包含对方的头文件会引起编译变得复杂，提供api或者接口会引起版本危机等问题。 sigslot的出现为我们提供了一种解决问题的思想，它用“信号”的概念实现不同模块之间的传输问题，sigslot本身类似于一条通讯电缆，两端提供发送器和接收器，只要把两个模块用这条电缆连接起来就可以实现接口调用，而sigslot本身只是一个轻量级的作品，整个库只有一个.h文件，所以无论处于何种层次的库，都可以非常方便的包含它。 举个例子，我们设计一个发送消息的类，这个类负责在某种时刻向外界发出求救信号:》》<a href="http://blog.csdn.net/sky04/article/details/6338400">引用</a> &lt;---</p>
+
+<p>信号和槽的概念解决了 低耦合和高内聚。使得模块间的耦合度降低。</p>
+
+<p>下面的代码使用了Sigslot，Sigslot是一个小巧的框架，很好封装了信号和槽。推荐使用！！！</p>
+
+<pre><code>/*
+   功能，Sigslot入门
+   日期，2012年7月1日
+   */
+#include &lt;iostream&gt;
+#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+#include "sigslot.h"
+
+using namespace std;
+using namespace sigslot;
+
+class ThreadMutex 
+{
+    private:
+    pthread_mutex_t mtx;
+    public:
+    ThreadMutex()
+    {
+        pthread_mutex_init(&amp;mtx,NULL);
+    }
+    ~ThreadMutex()
+    {
+        pthread_mutex_destroy( &amp;mtx );
+    }
+    inline void lock()
+    {
+        pthread_mutex_lock( &amp;mtx );
+    }
+    inline void unlock()
+    {
+        pthread_mutex_unlock( &amp;mtx );
+    }
+};
+
+class Location
+{
+    private:
+        //pthread_t threadmy;
+    public:
+        // 在这里指定信号，这里的信号是不带参数的，signaln表示带几个参数，后面将会用
+        // 这个信号与指定的槽进行绑定的。
+        signal0&lt;&gt; ToSniffer;
+        Location()
+        {
+            printf("Location is started!\n"); 
+        }
+        void startLoc()
+        {
+            cout &lt;&lt; "开始11" &lt;&lt; endl;
+            ToSniffer();
+            sleep(1);
+            cout &lt;&lt; "结束11" &lt;&lt; endl;
+        }
+};
+class Topocation
+{
+    private:
+        //pthread_t threadmy;
+    public:
+        // 在这里指定信号，这里的信号是不带参数的，signaln表示带几个参数，后面将会用
+        // 这个信号与指定的槽进行绑定的。
+        signal0&lt;&gt; ToSniffer;
+        Topocation()
+        {
+            printf("Topocation is started!\n"); 
+        }
+        void startTopo()
+        {
+            cout &lt;&lt; "开始2" &lt;&lt; endl;
+            ToSniffer();
+            sleep(1);
+            cout &lt;&lt; "结束2" &lt;&lt; endl;
+        }
+
+        // 继承 has_slots&lt;&gt; ，表示拥有响应信号的槽
+};
+class Sniffer : public has_slots&lt;&gt;
+{
+    public:
+        Sniffer()
+        {
+        }
+        // 作为信号响应的槽
+        void startSniffer()
+        {
+            m_tx.lock();
+            cout &lt;&lt; "开始探测！ " &lt;&lt; b_state &lt;&lt; endl;
+            sleep(3);
+            cout &lt;&lt;"探测结束" &lt;&lt; endl;
+            m_tx.unlock();
+        }
+    private:
+        bool b_state;
+        ThreadMutex m_tx;
+};
+class Control
+{
+    private:
+        pthread_t mythread;
+    public:
+        Sniffer mysniffer;
+        Location myLoc;
+        Topocation myTopo;
+        Control()
+        {
+            myLoc.ToSniffer.connect(&amp;mysniffer,&amp;Sniffer::startSniffer);
+            myTopo.ToSniffer.connect(&amp;mysniffer,&amp;Sniffer::startSniffer);
+        }
+        void controlsend()
+        {
+            int ret;
+            //void *startFunc1(void *a);
+            //void *p = (void *)a;
+        void * startFunc1(void * tmp);
+        void * startFunc2(void * tmp);
+            ret = pthread_create(&amp;mythread,NULL,startFunc1,this);
+            ret = pthread_create(&amp;mythread,NULL,startFunc2,this);
+            if(ret &lt; 0)
+                printf("thread create wrong!\n");
+        }
+};
+        void * startFunc1(void * tmp)
+        {
+                Control * p = (Control *)tmp;
+                    p -&gt;myLoc.startLoc();
+        }
+        void * startFunc2(void * tmp)
+        {
+                Control * p = (Control *)tmp;
+                p -&gt; myTopo.startTopo();
+        }
+int main()
+{
+
+    int ret;
+    Control mycontrol;
+    mycontrol.controlsend();
+    while(1);
+    return 0;
+}
+</code></pre>
+
+<p>Sniffer实现了 “槽” --- 即响应函数。<br/>
+signal0&lt;> ToSniffer;<br/>
+// 在这里指定信号，这里的信号是不带参数的，signaln表示带几个参数，后面将会用<br/>
+        // 这个信号与指定的槽进行绑定的。
+具体的用法可以查阅</p>
+
+<pre><code>Sniffer mysniffer;
+        Location myLoc;
+        Topocation myTopo;
+        Control()
+        {
+            myLoc.ToSniffer.connect(&amp;mysniffer,&amp;Sniffer::startSniffer);
+            myTopo.ToSniffer.connect(&amp;mysniffer,&amp;Sniffer::startSniffer);
+        }
+</code></pre>
+
+<p>在这里建立了链接。</p>
+
+<p>可以用来实现 模块A 和B 调用公共模块。模块间省去了 用while循环的方式被动的接受命令，而是主动相应。while死循环的方式无疑是浪费cpu，而信号量的方式，又显得不够灵魂。
+<strong>其实Sigslot也是封装了 观察者模式。</strong>这里需要特别注意拉。</p>
+
+</section>
+<section class="meta">
+<span class="author">
+  <a href="http://geeklu.com">海涛</a>
+</span>
+<span class="time">
+  /
+  <time datetime="2012-07-22">2012-07-22</time>
+</span>
+<br />
+<span class="license">
+  Published under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">(CC) BY-NC-SA</a>
+</span>
+
+<span class="categories">
+  in categories
+  
+  <a href="/categories/#编程经验" title="编程经验">编程经验</a>&nbsp;
+  
+</span>
+
+
+<span class="tags">
+  tagged with 
+  
+  <a href="/tags/#僵尸进程" title="僵尸进程">僵尸进程</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="comment">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'geeklu'; // required: replace example with your forum shortname
+    var disqus_url = '/2012/07/%E7%BA%BF%E7%A8%8B%E9%97%B4%E7%9A%84%E4%BE%9D%E8%B5%96%E5%90%AF%E5%8A%A8--%E4%BF%A1%E5%8F%B7%E5%92%8C%E6%A7%BD/';
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+<script type="text/javascript">
+$(function(){
+  $(document).keydown(function(e) {
+    var url = false;
+        if (e.which == 37 || e.which == 74) {  // Left arrow and J
+            
+        url = '/2012/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%94%EF%BC%89--%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E5%8F%8A%E5%90%84%E7%A7%8D%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95/';
+        
+        }
+        else if (e.which == 39 || e.which == 75) {  // Right arrow and K
+            
+        url = '/2013/03/linux_C%2B%2B%E9%99%90%E6%97%B6%E8%BE%93%E5%85%A5/';
+        
+        }
+        if (url) {
+            window.location = url;
+        }
+  });
+})
+</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2013 by <a href="http://zmcfei.github.io/about/">Haitao</a> | <span class="label label-info">2013-08-31 15:06:27 CST</span></small></p>
+    </footer>
+
+    </div>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-12936429-2']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

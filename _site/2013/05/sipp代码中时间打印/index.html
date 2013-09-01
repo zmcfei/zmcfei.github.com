@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="海涛" />
+    <title>Sipp代码中时间打印 | 海涛</title>
+    <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAD/APr59wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIiIiIiAAAiIiIiIiIAACIiIiIiIgERERERERIiAREREREREiIBERERERESIgERIiIiERIiAREiIiIREiIBESIhERESIgERIiERERIiAREiIiIiIiIBESIiIiIiIgERIiIiIiIiAREREREREAABEREREREQAAERERERERAADgAQAA4AEAAOABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAA8AAAAPAAAADwAA" rel="icon" type="image/x-icon" />
+    <link href="/feed/" rel="alternate" title="海涛" type="application/atom+xml" />
+    
+    <link rel="stylesheet" href="/media/css/highlight.css">
+    <link href='/media/webfonts/ss-social.css' rel='stylesheet'>
+    <link href='/media/webfonts/ss-standard.css' rel='stylesheet'>
+    <link href="/media/css/screen.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <div class="buttons">
+          <a href="/" class="ss-icon" title="Go to homepage">home</a>
+          <a href="/categories" class="ss-icon" title="Category" >list</a>
+          <a href="/tags" class="ss-icon" title="Tag Cloud" >tags</a>
+          <a href="/guestbook" class="ss-icon" title="Guest Book" >talk</a>
+          <a href="/about" class="ss-icon" title="About" >user</a>
+          <a href="/feed" class="ss-icon" title="Subscribe by RSS" >rss</a>
+        </div>
+        <h1>Sipp代码中时间打印</h1>
+        </header>
+        <hr>
+        <article class="content">
+        <section class="post">
+<h1>c语言获取时间</h1>
+
+<p>代码如下：</p>
+
+<pre><code>#include &lt;string.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;time.h&gt;
+using namespace std;
+
+char* formatTime (struct timeval* P_tv, bool microseconds)
+{
+  static char L_time [50];
+  struct tm * L_currentDate;
+
+  // Get the current date and time
+  time(&amp;P_tv-&gt;tv_sec);
+  L_currentDate = localtime ((const time_t *)&amp;P_tv-&gt;tv_sec);
+
+  // Format the time
+  if (L_currentDate == NULL)
+    {
+      memset (L_time, 0, 50);
+    } 
+  else
+    {
+ if (microseconds) {
+   sprintf(L_time, "%4.4d-%2.2d-%2.2d %2.2d:%2.2d:%2.2d:%03.03f",
+       L_currentDate-&gt;tm_year + 1900,
+       L_currentDate-&gt;tm_mon + 1,
+       L_currentDate-&gt;tm_mday,
+       L_currentDate-&gt;tm_hour,
+       L_currentDate-&gt;tm_min,
+       L_currentDate-&gt;tm_sec,
+       (double)P_tv-&gt;tv_usec/(double)1000.0);
+ } else {
+          sprintf(L_time, "%4.4d-%2.2d-%2.2d/t%2.2d:%2.2d:%2.2d:%3.3d/t%10.10d.%6.6d",
+       L_currentDate-&gt;tm_year + 1900,
+       L_currentDate-&gt;tm_mon + 1,
+       L_currentDate-&gt;tm_mday,
+       L_currentDate-&gt;tm_hour,
+       L_currentDate-&gt;tm_min,
+       L_currentDate-&gt;tm_sec,
+              (int) (P_tv-&gt;tv_usec)/1000,
+              (long) (P_tv-&gt;tv_sec),
+              (long) (P_tv-&gt;tv_usec));       
+ }
+    }
+  return (L_time);
+} /* end of formatTime */
+
+int main()
+{
+    struct timeval currenttime;
+    printf("%s\n",formatTime(&amp;currenttime,true));
+    sleep(5);
+    printf("%s\n",formatTime(&amp;currenttime,true));
+}
+</code></pre>
+
+<p>输出时间：
+2013-05-05 21:12:48:-1217089.548
+2013-05-05 21:12:53:-1217089.548
+精确计算了时间。</p>
+
+<blockquote><p>有时间再扩展，做更深入的解释。</p></blockquote>
+
+</section>
+<section class="meta">
+<span class="author">
+  <a href="http://geeklu.com">海涛</a>
+</span>
+<span class="time">
+  /
+  <time datetime="2013-05-05">2013-05-05</time>
+</span>
+<br />
+<span class="license">
+  Published under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">(CC) BY-NC-SA</a>
+</span>
+
+<span class="categories">
+  in categories
+  
+  <a href="/categories/#编程经验" title="编程经验">编程经验</a>&nbsp;
+  
+</span>
+
+
+<span class="tags">
+  tagged with 
+  
+  <a href="/tags/#时间标签" title="时间标签">时间标签</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="comment">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'geeklu'; // required: replace example with your forum shortname
+    var disqus_url = '/2013/05/sipp%E4%BB%A3%E7%A0%81%E4%B8%AD%E6%97%B6%E9%97%B4%E6%89%93%E5%8D%B0/';
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+<script type="text/javascript">
+$(function(){
+  $(document).keydown(function(e) {
+    var url = false;
+        if (e.which == 37 || e.which == 74) {  // Left arrow and J
+            
+        url = '/2013/03/tmp/';
+        
+        }
+        else if (e.which == 39 || e.which == 75) {  // Right arrow and K
+            
+        url = '/2013/05/sipp%E4%BB%A3%E7%A0%81%E4%B8%AD%E7%9A%84%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%8A%80%E5%B7%A7/';
+        
+        }
+        if (url) {
+            window.location = url;
+        }
+  });
+})
+</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2013 by <a href="http://zmcfei.github.io/about/">Haitao</a> | <span class="label label-info">2013-08-31 15:06:27 CST</span></small></p>
+    </footer>
+
+    </div>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-12936429-2']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

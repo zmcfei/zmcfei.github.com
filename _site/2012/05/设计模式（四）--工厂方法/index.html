@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="海涛" />
+    <title>设计模式（四）  工厂方法 | 海涛</title>
+    <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAD/APr59wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIiIiIiAAAiIiIiIiIAACIiIiIiIgERERERERIiAREREREREiIBERERERESIgERIiIiERIiAREiIiIREiIBESIhERESIgERIiERERIiAREiIiIiIiIBESIiIiIiIgERIiIiIiIiAREREREREAABEREREREQAAERERERERAADgAQAA4AEAAOABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAA8AAAAPAAAADwAA" rel="icon" type="image/x-icon" />
+    <link href="/feed/" rel="alternate" title="海涛" type="application/atom+xml" />
+    
+    <link rel="stylesheet" href="/media/css/highlight.css">
+    <link href='/media/webfonts/ss-social.css' rel='stylesheet'>
+    <link href='/media/webfonts/ss-standard.css' rel='stylesheet'>
+    <link href="/media/css/screen.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <div class="buttons">
+          <a href="/" class="ss-icon" title="Go to homepage">home</a>
+          <a href="/categories" class="ss-icon" title="Category" >list</a>
+          <a href="/tags" class="ss-icon" title="Tag Cloud" >tags</a>
+          <a href="/guestbook" class="ss-icon" title="Guest Book" >talk</a>
+          <a href="/about" class="ss-icon" title="About" >user</a>
+          <a href="/feed" class="ss-icon" title="Subscribe by RSS" >rss</a>
+        </div>
+        <h1>设计模式（四）  工厂方法</h1>
+        </header>
+        <hr>
+        <article class="content">
+        <section class="post">
+<h2>设计模式（四） ---- 工厂方法模式</h2>
+
+<p>绝大部分转自<a href="%EF%BC%9Ahttp://blog.csdn.net/zhengzhb/article/details/7359385">这里</a></p>
+
+<p>工厂方法模式简单来说就是将工厂里创建对象的部分，抽象成虚类。这样我们就可以降低工厂类方法内的逻辑。</p>
+
+<p><img src="http://hi.csdn.net/attachment/201203/15/0_1331817716F3IJ.gif" alt="enter image description here" /></p>
+
+<p> 简单工厂模式的最大优点在于工厂类中包含了必要的逻辑判断，根据客户端的选择条件动态实例化相关的类，注意是相关的类，而不是仅仅一个类。</p>
+
+<p>典型应用
+       要说明工厂模式的优点，可能没有比组装汽车更合适的例子了。场景是这样的：汽车由发动机、轮、底盘组成，现在需要组装一辆车交给调用者。假如不使用工厂模式，代码如下：</p>
+
+<pre><code>class Engine {
+    public void getStyle(){
+        System.out.println("这是汽车的发动机");
+    }
+}
+class Underpan {
+    public void getStyle(){
+        System.out.println("这是汽车的底盘");
+    }
+}
+class Wheel {
+    public void getStyle(){
+        System.out.println("这是汽车的轮胎");
+    }
+}
+public class Client {
+    public static void main(String[] args) {
+        Engine engine = new Engine();
+        Underpan underpan = new Underpan();
+        Wheel wheel = new Wheel();
+        ICar car = new Car(underpan, wheel, engine);
+        car.show();
+    }
+}
+</code></pre>
+
+<p>使用工厂方法：</p>
+
+<pre><code>interface IFactory {
+    public ICar createCar();
+}
+class Factory implements IFactory {
+    public ICar createCar() {
+        Engine engine = new Engine();
+        Underpan underpan = new Underpan();
+        Wheel wheel = new Wheel();
+        ICar car = new Car(underpan, wheel, engine);
+        return car;
+    }
+}
+public class Client {
+    public static void main(String[] args) {
+        IFactory factory = new Factory();
+        ICar car = factory.createCar();
+        car.show();
+    }
+}
+</code></pre>
+
+<p>可以看到，调用者为了组装汽车还需要另外实例化发动机、底盘和轮胎，而这些汽车的组件是与调用者无关的，严重违反了迪米特法则（没有直接关系，不出现在类内部。），耦合度太高。并且非常不利于扩展。另外，本例中发动机、底盘和轮胎还是比较具体的，在实际应用中，可能这些产品的组件也都是抽象的，调用者根本不知道怎样组装产品。假如使用工厂方法的话，整个架构就显得清晰了许多。 <br/>
+       工厂方法实现时，客户端需要决定实例化哪一个工厂来实现。工厂方法把所见但工厂内部的逻辑判断移动到了客户端，本来需要修改工厂类的，而现在只需要修改客户端。降低了耦合。</p>
+
+</section>
+<section class="meta">
+<span class="author">
+  <a href="http://geeklu.com">海涛</a>
+</span>
+<span class="time">
+  /
+  <time datetime="2012-05-21">2012-05-21</time>
+</span>
+<br />
+<span class="license">
+  Published under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">(CC) BY-NC-SA</a>
+</span>
+
+<span class="categories">
+  in categories
+  
+  <a href="/categories/#设计模式" title="设计模式">设计模式</a>&nbsp;
+  
+</span>
+
+
+<span class="tags">
+  tagged with 
+  
+  <a href="/tags/#设计模式" title="设计模式">设计模式</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="comment">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'geeklu'; // required: replace example with your forum shortname
+    var disqus_url = '/2012/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89--%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95/';
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+<script type="text/javascript">
+$(function(){
+  $(document).keydown(function(e) {
+    var url = false;
+        if (e.which == 37 || e.which == 74) {  // Left arrow and J
+            
+        url = '/2012/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%89%EF%BC%89--%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/';
+        
+        }
+        else if (e.which == 39 || e.which == 75) {  // Right arrow and K
+            
+        url = '/2012/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%94%EF%BC%89--%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E5%8F%8A%E5%90%84%E7%A7%8D%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95/';
+        
+        }
+        if (url) {
+            window.location = url;
+        }
+  });
+})
+</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2013 by <a href="http://zmcfei.github.io/about/">Haitao</a> | <span class="label label-info">2013-08-31 15:06:27 CST</span></small></p>
+    </footer>
+
+    </div>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-12936429-2']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

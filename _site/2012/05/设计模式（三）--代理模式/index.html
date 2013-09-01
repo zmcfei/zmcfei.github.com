@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="海涛" />
+    <title>设计模式（三）  代理模式 | 海涛</title>
+    <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAD/APr59wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIiIiIiAAAiIiIiIiIAACIiIiIiIgERERERERIiAREREREREiIBERERERESIgERIiIiERIiAREiIiIREiIBESIhERESIgERIiERERIiAREiIiIiIiIBESIiIiIiIgERIiIiIiIiAREREREREAABEREREREQAAERERERERAADgAQAA4AEAAOABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAA8AAAAPAAAADwAA" rel="icon" type="image/x-icon" />
+    <link href="/feed/" rel="alternate" title="海涛" type="application/atom+xml" />
+    
+    <link rel="stylesheet" href="/media/css/highlight.css">
+    <link href='/media/webfonts/ss-social.css' rel='stylesheet'>
+    <link href='/media/webfonts/ss-standard.css' rel='stylesheet'>
+    <link href="/media/css/screen.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <div class="buttons">
+          <a href="/" class="ss-icon" title="Go to homepage">home</a>
+          <a href="/categories" class="ss-icon" title="Category" >list</a>
+          <a href="/tags" class="ss-icon" title="Tag Cloud" >tags</a>
+          <a href="/guestbook" class="ss-icon" title="Guest Book" >talk</a>
+          <a href="/about" class="ss-icon" title="About" >user</a>
+          <a href="/feed" class="ss-icon" title="Subscribe by RSS" >rss</a>
+        </div>
+        <h1>设计模式（三）  代理模式</h1>
+        </header>
+        <hr>
+        <article class="content">
+        <section class="post">
+<h2>设计模式（三） ----代理模式</h2>
+
+<h3>一，普通代理模式</h3>
+
+<p>代理模式也比较容易理解，但是其用途不是很好理解了。</p>
+
+<p><img src="http://hi.csdn.net/attachment/201108/8/0_1312786173DBDP.gif" alt="enter image description here" /></p>
+
+<p>设计模式中运用了面向对象编程语言的重要特性：封装、继承、多态，真正领悟设计模式的精髓是一个漫长的过程，需要大量实践经验的积累。-------我还有很长的路要走了。</p>
+
+<h3>二 代理模式的使用</h3>
+
+<p>为其他对象提供一种代理以控制对这个对象的访问。 其应用场景有：</p>
+
+<p><strong>1 远程代理。</strong></p>
+
+<p><strong>2. 虚拟代理，</strong><br/>
+是根据需要创建开销很大的对象时，通过它来存放实例化需要很长时间的真实对象。这样可以达到性能最优，如当打开html网页时，需要很快打开。但当网页类执行“打开”操作时，遇到图片，就需要等待完成再进行。但是用代理模式，我们可以先保存这样一个图片的代理（存放了，与图片相同大小的尺寸），然后直接预留位置。等文字全部打开，再进行“打开图片”的操作。</p>
+
+<blockquote><p>其应用中还有auto_ptr。</p></blockquote>
+
+<p>我们知道C++中没有垃圾回收机制，可以通过智能指针来弥补，下面给出智能指针的一种实现，采用了引用计数的策略。
+ 在这个例子属于虚代理的情况，下面给两个智能引用的例子。一个是C++中的auto_ptr，另一个是smart_ptr。自己实现了一下。先给出auto_ptr的代码实现：</p>
+
+<pre><code>template&lt;class T&gt;  
+class auto_ptr {  
+public:  
+    explicit auto_ptr(T *p = 0): pointee(p) {}  
+    auto_ptr(auto_ptr&lt;T&gt;&amp; rhs): pointee(rhs.release()) {}  
+    ~auto_ptr() { delete pointee; }  
+    auto_ptr&lt;T&gt;&amp; operator=(auto_ptr&lt;T&gt;&amp; rhs)  
+    {  
+        if (this != &amp;rhs) reset(rhs.release());  
+        return *this;  
+    }  
+    T&amp; operator*() const { return *pointee; }  
+    T* operator-&gt;() const { return pointee; }  
+    T* get() const { return pointee; }  
+    T* release()  
+    {  
+        T *oldPointee = pointee;  
+        pointee = 0;  
+        return oldPointee;  
+    }  
+    void reset(T *p = 0)  
+    {  
+        if (pointee != p) {  
+               delete pointee;  
+               pointee = p;  
+            }  
+        }  
+private:  
+    T *pointee;  
+};  
+</code></pre>
+
+<p><strong>3.安全代理</strong><br/>
+用来控制真实对象访问时的权限。</p>
+
+<p><strong>4.智能引用。</strong></p>
+
+<pre><code>template &lt;typename T&gt;
+class smart_ptr
+{
+public:
+    smart_ptr(T *p = 0): pointee(p), count(new size_t(1)) { }  //初始的计数值为1
+    smart_ptr(const smart_ptr &amp;rhs): pointee(rhs.pointee), count(rhs.count) { ++*count; } //拷贝构造函数，计数加1
+    ~smart_ptr() { decr_count(); }              //析构，计数减1，减到0时进行垃圾回收，即释放空间
+    smart_ptr&amp; operator= (const smart_ptr&amp; rhs) //重载赋值操作符
+    {
+        //给自身赋值也对，因为如果自身赋值，计数器先减1，再加1，并未发生改变
+        ++*count;
+        decr_count();
+        pointee = rhs.pointee;
+        count = rhs.count;
+        return *this;
+    }  
+    //重载箭头操作符和解引用操作符，未提供指针的检查
+    T *operator-&gt;() { return pointee; }
+    const T *operator-&gt;() const { return pointee; }
+    T &amp;operator*() { return *pointee; }
+    const T &amp;operator*() const { return *pointee; }
+    size_t get_refcount() { return *count; } //获得引用计数器值
+private: 
+    T *pointee;       //实际指针，被代理  
+    size_t *count;    //引用计数器
+    void decr_count() //计数器减1
+    {
+        if(--*count == 0) 
+        {
+            delete pointee;
+            delete count;
+        }
+    }
+};
+</code></pre>
+
+</section>
+<section class="meta">
+<span class="author">
+  <a href="http://geeklu.com">海涛</a>
+</span>
+<span class="time">
+  /
+  <time datetime="2012-05-06">2012-05-06</time>
+</span>
+<br />
+<span class="license">
+  Published under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">(CC) BY-NC-SA</a>
+</span>
+
+<span class="categories">
+  in categories
+  
+  <a href="/categories/#设计模式" title="设计模式">设计模式</a>&nbsp;
+  
+</span>
+
+
+<span class="tags">
+  tagged with 
+  
+  <a href="/tags/#设计模式" title="设计模式">设计模式</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="comment">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'geeklu'; // required: replace example with your forum shortname
+    var disqus_url = '/2012/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%89%EF%BC%89--%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/';
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+<script type="text/javascript">
+$(function(){
+  $(document).keydown(function(e) {
+    var url = false;
+        if (e.which == 37 || e.which == 74) {  // Left arrow and J
+            
+        url = '/2012/04/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89--%E5%9B%9B%E5%A4%A7%E5%8E%9F%E5%88%99/';
+        
+        }
+        else if (e.which == 39 || e.which == 75) {  // Right arrow and K
+            
+        url = '/2012/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89--%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95/';
+        
+        }
+        if (url) {
+            window.location = url;
+        }
+  });
+})
+</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2013 by <a href="http://zmcfei.github.io/about/">Haitao</a> | <span class="label label-info">2013-08-31 15:06:27 CST</span></small></p>
+    </footer>
+
+    </div>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-12936429-2']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

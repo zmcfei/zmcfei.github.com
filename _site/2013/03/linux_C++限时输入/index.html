@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="海涛" />
+    <title>Linux_c++限时输入 | 海涛</title>
+    <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAD/APr59wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIiIiIiAAAiIiIiIiIAACIiIiIiIgERERERERIiAREREREREiIBERERERESIgERIiIiERIiAREiIiIREiIBESIhERESIgERIiERERIiAREiIiIiIiIBESIiIiIiIgERIiIiIiIiAREREREREAABEREREREQAAERERERERAADgAQAA4AEAAOABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAA8AAAAPAAAADwAA" rel="icon" type="image/x-icon" />
+    <link href="/feed/" rel="alternate" title="海涛" type="application/atom+xml" />
+    
+    <link rel="stylesheet" href="/media/css/highlight.css">
+    <link href='/media/webfonts/ss-social.css' rel='stylesheet'>
+    <link href='/media/webfonts/ss-standard.css' rel='stylesheet'>
+    <link href="/media/css/screen.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <div class="buttons">
+          <a href="/" class="ss-icon" title="Go to homepage">home</a>
+          <a href="/categories" class="ss-icon" title="Category" >list</a>
+          <a href="/tags" class="ss-icon" title="Tag Cloud" >tags</a>
+          <a href="/guestbook" class="ss-icon" title="Guest Book" >talk</a>
+          <a href="/about" class="ss-icon" title="About" >user</a>
+          <a href="/feed" class="ss-icon" title="Subscribe by RSS" >rss</a>
+        </div>
+        <h1>Linux_c++限时输入</h1>
+        </header>
+        <hr>
+        <article class="content">
+        <section class="post">
+<h2>linux c++ 限时输入</h2>
+
+<p>今天在论坛是看到一个需求：在终端限时输入的问题。<br/>
+自己了找代码：</p>
+
+<pre><code>#include&lt;unistd.h&gt;
+#include&lt;signal.h&gt;
+#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+#include&lt;setjmp.h&gt;
+
+#define MAXLINE 4096
+
+static void sig_alrm(int);
+
+static jmp_buf env_alrm;
+
+int main(void)
+{
+        int n;
+        char line[MAXLINE];
+
+        if(signal(SIGALRM, sig_alrm) == SIG_ERR)
+                printf("signal(SIGALRM) error!\n");
+    if(setjmp(env_alrm) != 0)
+    {
+        printf("read timeout!\n");
+        return -1;
+    }
+        alarm(10);
+        //这里存在竞争条件
+        //依赖 中断的系统调用， 如果系统自动重启系统调用，则无效
+        if((n = read(STDIN_FILENO, line, MAXLINE)) &lt; 0)
+                printf("read error");
+        alarm(0);//如果读到数据则立即结束。
+
+        write(STDOUT_FILENO, line, n);
+        return 0;
+}
+
+static void sig_alrm(int signo)
+{
+        //do nothing
+        longjmp(env_alrm,1);
+        printf("sig_alrm!");
+}
+</code></pre>
+
+<p><strong>函数原型：
+int setjmp(jmp_buf envbuf);</strong><br/>
+setjmp函数用缓冲区envbuf保存系统堆栈的内容，以便后续的longjmp函数使用。setjmp函数初次启用时返回0值。</p>
+
+<p><strong>void longjmp(jmp_buf envbuf, int val);</strong><br/>
+longjmp函数中的参数envbuf是由setjmp函数所保存的堆栈环境，参数val设置setjmp函数的返回值。longjmp函数本身是没有返回值的，它执行后跳转到保存envbuf参数的setjmp函数调用，并由setjmp函数调用返回，此时setjmp函数的返回值就是val。</p>
+
+<p>调用longjmp函数时不能使setjmp函数返回０，如果val为0，则setjmp函数返回１。longjmp函数从来不返回，因为它调用后就跳转到setjmp函数保存的堆栈处，恢复堆栈开始执行，所以longjmp函数不会返回。</p>
+
+<p>例子用到了 alarm 定时器函数。指向sig_alrm().定时器函数，是用来定时发送信号的。</p>
+
+</section>
+<section class="meta">
+<span class="author">
+  <a href="http://geeklu.com">海涛</a>
+</span>
+<span class="time">
+  /
+  <time datetime="2013-03-31">2013-03-31</time>
+</span>
+<br />
+<span class="license">
+  Published under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">(CC) BY-NC-SA</a>
+</span>
+
+<span class="categories">
+  in categories
+  
+  <a href="/categories/#编程经验" title="编程经验">编程经验</a>&nbsp;
+  
+</span>
+
+
+<span class="tags">
+  tagged with 
+  
+  <a href="/tags/#限时输入" title="限时输入">限时输入</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="comment">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'geeklu'; // required: replace example with your forum shortname
+    var disqus_url = '/2013/03/linux_C%2B%2B%E9%99%90%E6%97%B6%E8%BE%93%E5%85%A5/';
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+<script type="text/javascript">
+$(function(){
+  $(document).keydown(function(e) {
+    var url = false;
+        if (e.which == 37 || e.which == 74) {  // Left arrow and J
+            
+        url = '/2012/07/%E7%BA%BF%E7%A8%8B%E9%97%B4%E7%9A%84%E4%BE%9D%E8%B5%96%E5%90%AF%E5%8A%A8--%E4%BF%A1%E5%8F%B7%E5%92%8C%E6%A7%BD/';
+        
+        }
+        else if (e.which == 39 || e.which == 75) {  // Right arrow and K
+            
+        url = '/2013/03/tmp/';
+        
+        }
+        if (url) {
+            window.location = url;
+        }
+  });
+})
+</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2013 by <a href="http://zmcfei.github.io/about/">Haitao</a> | <span class="label label-info">2013-08-31 15:06:27 CST</span></small></p>
+    </footer>
+
+    </div>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-12936429-2']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>
